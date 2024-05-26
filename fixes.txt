@@ -1,0 +1,94 @@
+MySQL Shell 8.0.37
+
+Copyright (c) 2016, 2024, Oracle and/or its affiliates.
+Oracle is a registered trademark of Oracle Corporation and/or its affiliates.
+Other names may be trademarks of their respective owners.
+
+Type '\help' or '\?' for help; '\quit' to exit.
+ MySQL  JS > \sql
+Switching to SQL mode... Commands end with ;
+ MySQL  SQL > \c --mc root@localhost
+Creating a Classic session to 'root@localhost'
+Please provide the password for 'root@localhost': ************
+Save password for 'root@localhost'? [Y]es/[N]o/Ne[v]er (default No): N
+Fetching global names for auto-completion... Press ^C to stop.
+Your MySQL connection id is 11
+Server version: 8.0.37 MySQL Community Server - GPL
+No default schema selected; type \use <schema> to set one.
+ MySQL  localhost:3306 ssl  SQL > use accomodate;
+Default schema set to `accomodate`.
+Fetching global names, object names from `accomodate` for auto-completion... Press ^C to stop.
+ MySQL  localhost:3306 ssl  accomodate  SQL > show create table arrendatarios;
++---------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Table         | Create Table                                                                                                                                                                                                              |
++---------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| arrendatarios | CREATE TABLE `arrendatarios` (
+  `ID_Arrendatario` int NOT NULL AUTO_INCREMENT,
+  `nombre` varchar(50) DEFAULT NULL,
+  PRIMARY KEY (`ID_Arrendatario`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci |
++---------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+1 row in set (0.0065 sec)
+ MySQL  localhost:3306 ssl  accomodate  SQL > show create table clientes;
++----------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Table    | Create Table                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
++----------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| clientes | CREATE TABLE `clientes` (
+  `ID_Cliente` int NOT NULL AUTO_INCREMENT,
+  `Nombre` varchar(45) DEFAULT NULL,
+  `Apellido` varchar(45) DEFAULT NULL,
+  `CorreoElectronico` varchar(45) DEFAULT NULL,
+  `Telefono` varchar(20) DEFAULT NULL,
+  `Direccion` varchar(45) DEFAULT NULL,
+  `Ciudad` varchar(45) DEFAULT NULL,
+  `Pais` varchar(45) DEFAULT NULL,
+  `FechaRegistro` date DEFAULT NULL,
+  PRIMARY KEY (`ID_Cliente`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci |
++----------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+1 row in set (0.0010 sec)
+ MySQL  localhost:3306 ssl  accomodate  SQL > ALTER TABLE `arrendatarios`
+                                           -> ADD COLUMN `Apellido` varchar(45) DEFAULT NULL,
+                                           -> ADD COLUMN `CorreoElectronico` varchar(45) DEFAULT NULL,
+                                           -> ADD COLUMN `Telefono` varchar(20) DEFAULT NULL,
+                                           -> ADD COLUMN `Direccion` varchar(45) DEFAULT NULL,
+                                           -> ADD COLUMN `Ciudad` varchar(45) DEFAULT NULL,
+                                           -> ADD COLUMN `Pais` varchar(45) DEFAULT NULL,
+                                           -> ADD COLUMN `FechaRegistro` date DEFAULT NULL;
+Query OK, 0 rows affected (0.0197 sec)
+
+Records: 0  Duplicates: 0  Warnings: 0
+ MySQL  localhost:3306 ssl  accomodate  SQL >
+--------------------------------------------------------------------
+MySQL Shell 8.0.37
+
+Copyright (c) 2016, 2024, Oracle and/or its affiliates.
+Oracle is a registered trademark of Oracle Corporation and/or its affiliates.
+Other names may be trademarks of their respective owners.
+
+Type '\help' or '\?' for help; '\quit' to exit.
+ MySQL  JS > \c
+\connect [--mx|--mysqlx|--mc|--mysql] [--ssh <sshuri>] <URI>
+ MySQL  JS > \sql
+Switching to SQL mode... Commands end with ;
+ MySQL  SQL > \c --mc root@localhost
+Creating a Classic session to 'root@localhost'
+Please provide the password for 'root@localhost': ************
+Save password for 'root@localhost'? [Y]es/[N]o/Ne[v]er (default No): N
+Fetching global names for auto-completion... Press ^C to stop.
+Your MySQL connection id is 12
+Server version: 8.0.37 MySQL Community Server - GPL
+No default schema selected; type \use <schema> to set one.
+ MySQL  localhost:3306 ssl  SQL > use accomodate;
+Default schema set to `accomodate`.
+Fetching global names, object names from `accomodate` for auto-completion... Press ^C to stop.
+ MySQL  localhost:3306 ssl  accomodate  SQL > alter table arrendatarios add column contrasena varchar(255);
+Query OK, 0 rows affected (0.0210 sec)
+
+Records: 0  Duplicates: 0  Warnings: 0
+ MySQL  localhost:3306 ssl  accomodate  SQL > alter table clientes add column contrasena varchar(255);
+Query OK, 0 rows affected (0.0145 sec)
+
+Records: 0  Duplicates: 0  Warnings: 0
+ MySQL  localhost:3306 ssl  accomodate  SQL > ^C
+ MySQL  localhost:3306 ssl  accomodate  SQL >

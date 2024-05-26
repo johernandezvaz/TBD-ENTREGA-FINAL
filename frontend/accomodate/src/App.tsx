@@ -13,9 +13,9 @@ import Register from './screens/Register';
 function App() {
   const paises = [
     { name: 'Berlin', image: './citiy-1.jpg' },
-    { name: 'Dublin', image: './citiy-2.jpg' },
-    { name: 'Zurich', image: './citiy-3.jpg' },
-    { name: 'USA', image: './citiy-4.jpg' },
+    { name: 'Irlanda', image: './citiy-2.jpg' },
+    { name: 'Suiza', image: './citiy-3.jpg' },
+    { name: 'Estados Unidos', image: './citiy-4.jpg' },
     { name: 'Francia', image: './citiy-5.jpg' },
     { name: 'México', image: './citiy-6.jpg' },
   ];
