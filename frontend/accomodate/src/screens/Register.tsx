@@ -1,9 +1,8 @@
 import { useState } from 'react';
-import { createBrowserHistory } from 'history';
-// import Login from './Login';
+import { Navigate } from 'react-router-dom';
 
 const Register: React.FC = () => {
-  const history = createBrowserHistory();
+  const [redirectToLogin, setRedirectToLogin] = useState(false);
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -32,7 +31,7 @@ const Register: React.FC = () => {
       setFormError('Por favor complete todos los campos');
       return;
     }
-
+  
     try {
       const response = await fetch('http://localhost:5000/register', {
         method: 'POST',
@@ -41,19 +40,28 @@ const Register: React.FC = () => {
         },
         body: JSON.stringify(formData)
       });
-
+  
       const result = await response.json();
-      if (response.status == 200) {
+      if (response.status === 200) {
         console.log('Formulario enviado:', result);
         // Redirige a la página de inicio de sesión
-        history.push('/iniciar-sesion');
+        setRedirectToLogin(true);
+      } else if (response.status === 400 && result.error === 'El correo electrónico ya está en uso') {
+        // El correo electrónico ya está en uso, muestra un mensaje de error
+        setFormError('El correo electrónico ya está en uso');
       } else {
-        setFormError(result.error);
+        // Otro error, muestra el mensaje de error del servidor
+        setFormError(result.error || 'Error en el envío del formulario');
       }
     } catch (error) {
       setFormError('Error en el envío del formulario');
     }
   };
+  
+
+  if (redirectToLogin) {
+    return <Navigate to="/iniciar-sesion" />;
+  }
 
   return (
     <div className="container mx-auto mt-8">
