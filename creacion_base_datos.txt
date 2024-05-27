@@ -1,0 +1,154 @@
+MySQL Shell 8.0.37
+
+Copyright (c) 2016, 2024, Oracle and/or its affiliates.
+Oracle is a registered trademark of Oracle Corporation and/or its affiliates.
+Other names may be trademarks of their respective owners.
+
+Type '\help' or '\?' for help; '\quit' to exit.
+ MySQL  JS > \sql
+Switching to SQL mode... Commands end with ;
+ MySQL  SQL > \c --mc root@localhost
+Creating a Classic session to 'root@localhost'
+Please provide the password for 'root@localhost': ************
+Save password for 'root@localhost'? [Y]es/[N]o/Ne[v]er (default No): N
+Fetching global names for auto-completion... Press ^C to stop.
+Your MySQL connection id is 49
+Server version: 8.0.37 MySQL Community Server - GPL
+No default schema selected; type \use <schema> to set one.
+ MySQL  localhost:3306 ssl  SQL > create database accomodate;
+Query OK, 1 row affected (0.0194 sec)
+ MySQL  localhost:3306 ssl  SQL > use accomodate;
+Default schema set to `accomodate`.
+Fetching global names, object names from `accomodate` for auto-completion... Press ^C to stop.
+ MySQL  localhost:3306 ssl  accomodate  SQL > CREATE TABLE pais (
+                                           ->     id_pais INT PRIMARY KEY AUTO_INCREMENT,
+                                           ->     nombre_pais VARCHAR(100) NOT NULL
+                                           -> );
+Query OK, 0 rows affected (0.0260 sec)
+ MySQL  localhost:3306 ssl  accomodate  SQL > CREATE TABLE ciudad (
+                                           ->     id_ciudad INT PRIMARY KEY AUTO_INCREMENT,
+                                           ->     nombre_ciudad VARCHAR(100) NOT NULL,
+                                           ->     id_pais INT,
+                                           ->     FOREIGN KEY (id_pais) REFERENCES pais(id_pais)
+                                           -> );
+Query OK, 0 rows affected (0.0683 sec)
+ MySQL  localhost:3306 ssl  accomodate  SQL > CREATE TABLE usuario (
+                                           ->     id_usuario INT PRIMARY KEY AUTO_INCREMENT,
+                                           ->     nombre VARCHAR(100) NOT NULL,
+                                           ->     apellido VARCHAR(100) NOT NULL,
+                                           ->     correo_electronico VARCHAR(255) NOT NULL UNIQUE,
+                                           ->     direccion VARCHAR(255) NOT NULL,
+                                           ->     id_pais INT,
+                                           ->     id_ciudad INT,
+                                           ->     contraseña VARCHAR(100) NOT NULL,
+                                           ->     tipo_usuario ENUM('Cliente', 'Arrendatario') NOT NULL
+                                           -> );
+Query OK, 0 rows affected (0.0508 sec)
+ MySQL  localhost:3306 ssl  accomodate  SQL > ALTER TABLE usuario
+                                           -> ADD FOREIGN KEY (id_pais) REFERENCES pais(id_pais);
+Query OK, 0 rows affected (0.1085 sec)
+
+Records: 0  Duplicates: 0  Warnings: 0
+ MySQL  localhost:3306 ssl  accomodate  SQL > ALTER TABLE usuario
+                                           -> ADD FOREIGN KEY (id_ciudad) REFERENCES ciudad(id_ciudad);
+Query OK, 0 rows affected (0.1074 sec)
+
+Records: 0  Duplicates: 0  Warnings: 0
+ MySQL  localhost:3306 ssl  accomodate  SQL > CREATE TABLE alojamiento (
+                                           ->     id_alojamiento INT PRIMARY KEY AUTO_INCREMENT,
+                                           ->     nombre_alojamiento VARCHAR(100) NOT NULL,
+                                           ->     descripcion TEXT,
+                                           ->     direccion VARCHAR(255) NOT NULL,
+                                           ->     id_ciudad INT,
+                                           ->     id_anfitrion INT,
+                                           ->     FOREIGN KEY (id_ciudad) REFERENCES ciudad(id_ciudad),
+                                           ->     FOREIGN KEY (id_anfitrion) REFERENCES usuario(id_usuario)
+                                           -> );
+Query OK, 0 rows affected (0.0651 sec)
+ MySQL  localhost:3306 ssl  accomodate  SQL > ALTER TABLE alojamiento
+                                           -> ADD CONSTRAINT fk_anfitrion_tipo_usuario
+                                           -> FOREIGN KEY (id_anfitrion)
+                                           -> REFERENCES usuario(id_usuario)
+                                           -> WHERE tipo_usuario = 'Arrendatario';
+ERROR: 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'WHERE tipo_usuario = 'Arrendatario'' at line 5
+ MySQL  localhost:3306 ssl  accomodate  SQL > ALTER TABLE alojamiento
+                                           -> ADD CONSTRAINT fk_anfitrion_tipo_usuario
+                                           -> FOREIGN KEY (id_anfitrion)
+                                           -> REFERENCES usuario(id_usuario)
+                                           -> WHERE tipo_usuario = 'Arrendatario';
+ERROR: 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'WHERE tipo_usuario = 'Arrendatario'' at line 5
+ MySQL  localhost:3306 ssl  accomodate  SQL > ^C
+ MySQL  localhost:3306 ssl  accomodate  SQL >
+ MySQL  localhost:3306 ssl  accomodate  SQL >
+ MySQL  localhost:3306 ssl  accomodate  SQL > CREATE TABLE reserva (
+                                           ->     id_reserva INT PRIMARY KEY AUTO_INCREMENT,
+                                           ->     fecha_inicio DATE NOT NULL,
+                                           ->     fecha_fin DATE NOT NULL,
+                                           ->     id_huesped INT,
+                                           ->     id_alojamiento INT,
+                                           ->     FOREIGN KEY (id_huesped) REFERENCES usuario(id_usuario),
+                                           ->     FOREIGN KEY (id_alojamiento) REFERENCES alojamiento(id_alojamiento)
+                                           -> );
+Query OK, 0 rows affected (0.0732 sec)
+ MySQL  localhost:3306 ssl  accomodate  SQL > CREATE TABLE resena (
+                                           ->     id_reseña INT PRIMARY KEY AUTO_INCREMENT,
+                                           ->     puntuacion INT CHECK (puntuacion BETWEEN 1 AND 5),
+                                           ->     comentario TEXT,
+                                           ->     id_usuario INT,
+                                           ->     id_alojamiento INT,
+                                           ->     fecha DATE,
+                                           ->     FOREIGN KEY (id_usuario) REFERENCES usuario(id_usuario),
+                                           ->     FOREIGN KEY (id_alojamiento) REFERENCES alojamiento(id_alojamiento)
+                                           -> );
+Query OK, 0 rows affected (0.0795 sec)
+ MySQL  localhost:3306 ssl  accomodate  SQL > ALTER TABLE usuario
+                                           -> CHANGE COLUMN contraseña contrasena VARCHAR(100) NOT NULL;
+Query OK, 0 rows affected (0.0395 sec)
+
+Records: 0  Duplicates: 0  Warnings: 0
+ MySQL  localhost:3306 ssl  accomodate  SQL > desc usuario;
++--------------------+--------------------------------+------+-----+---------+----------------+
+| Field              | Type                           | Null | Key | Default | Extra          |
++--------------------+--------------------------------+------+-----+---------+----------------+
+| id_usuario         | int                            | NO   | PRI | NULL    | auto_increment |
+| nombre             | varchar(100)                   | NO   |     | NULL    |                |
+| apellido           | varchar(100)                   | NO   |     | NULL    |                |
+| correo_electronico | varchar(255)                   | NO   | UNI | NULL    |                |
+| direccion          | varchar(255)                   | NO   |     | NULL    |                |
+| id_pais            | int                            | YES  | MUL | NULL    |                |
+| id_ciudad          | int                            | YES  | MUL | NULL    |                |
+| contrasena         | varchar(100)                   | NO   |     | NULL    |                |
+| tipo_usuario       | enum('Cliente','Arrendatario') | NO   |     | NULL    |                |
++--------------------+--------------------------------+------+-----+---------+----------------+
+9 rows in set (0.0165 sec)
+ MySQL  localhost:3306 ssl  accomodate  SQL > CREATE TABLE transacciones (
+                                           ->     id_transaccion INT PRIMARY KEY AUTO_INCREMENT,
+                                           ->     id_reserva INT,
+                                           ->     metodo_pago ENUM('tarjeta_credito', 'tarjeta_debito') NOT NULL,
+                                           ->     monto DECIMAL(10, 2) NOT NULL,
+                                           ->     FOREIGN KEY (id_reserva) REFERENCES reserva(id_reserva)
+                                           -> );
+Query OK, 0 rows affected (0.0553 sec)
+ MySQL  localhost:3306 ssl  accomodate  SQL > CREATE TABLE favoritos (
+                                           ->     id_favorito INT PRIMARY KEY AUTO_INCREMENT,
+                                           ->     id_usuario INT,
+                                           ->     id_alojamiento INT,
+                                           ->     fecha_agregado TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                                           ->     FOREIGN KEY (id_usuario) REFERENCES usuario(id_usuario),
+                                           ->     FOREIGN KEY (id_alojamiento) REFERENCES alojamiento(id_alojamiento)
+                                           -> );
+Query OK, 0 rows affected (0.0814 sec)
+ MySQL  localhost:3306 ssl  accomodate  SQL > CREATE TABLE calendario_disponibilidad_propiedad (
+                                           ->     id_calendario_disponibilidad INT PRIMARY KEY AUTO_INCREMENT,
+                                           ->     id_alojamiento INT,
+                                           ->     fecha DATE NOT NULL,
+                                           ->     disponible BOOLEAN NOT NULL,
+                                           ->     FOREIGN KEY (id_alojamiento) REFERENCES alojamiento(id_alojamiento)
+                                           -> );
+Query OK, 0 rows affected (0.0653 sec)
+ MySQL  localhost:3306 ssl  accomodate  SQL > ALTER TABLE alojamiento
+                                           -> ADD COLUMN precio DECIMAL(10, 2) NOT NULL;
+Query OK, 0 rows affected (0.0511 sec)
+
+Records: 0  Duplicates: 0  Warnings: 0
+ MySQL  localhost:3306 ssl  accomodate  SQL >

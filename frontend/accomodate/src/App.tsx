@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import './App.css';
 import CityHeroSection from './components/CityHeroSection';
@@ -12,6 +13,9 @@ import Register from './screens/Register';
 import Homepage from './interface/Homepage';
 
 function App() {
+  const [loggedIn, setLoggedIn] = useState(false);
+  const [role] = useState<string | undefined>(undefined);
+
   const paises = [
     { name: 'Berlin', image: './citiy-1.jpg' },
     { name: 'Irlanda', image: './citiy-2.jpg' },
@@ -26,9 +30,7 @@ function App() {
 
   return (
     <Router>
-      <Header loggedIn={false} onLogout={function (): void {
-        throw new Error('Function not implemented.');
-      } } />
+      <Header loggedIn={loggedIn} onLogout={() => setLoggedIn(false)} role={role} />
       <Routes>
         <Route path="/" element={
           <>
