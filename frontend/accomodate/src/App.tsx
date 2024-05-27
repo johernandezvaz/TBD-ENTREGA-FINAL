@@ -9,6 +9,7 @@ import TravelWithUsSection from './components/TravelWithUsSection';
 import testimonialsData from './data/TestimonialsData';
 import Login from './screens/Login';
 import Register from './screens/Register';
+import Homepage from './interface/Homepage';
 
 function App() {
   const paises = [
@@ -25,7 +26,9 @@ function App() {
 
   return (
     <Router>
-      <Header />
+      <Header loggedIn={false} onLogout={function (): void {
+        throw new Error('Function not implemented.');
+      } } />
       <Routes>
         <Route path="/" element={
           <>
@@ -38,6 +41,7 @@ function App() {
         } />
         <Route path="/iniciar-sesion" element={<Login />} />
         <Route path="/registrarse" element={<Register />} />
+        <Route path="/home" element={<Homepage />} />
       </Routes>
     </Router>
   );
