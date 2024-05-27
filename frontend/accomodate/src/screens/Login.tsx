@@ -1,9 +1,12 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
+import { Navigate } from 'react-router-dom';
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [redirectToDashboard, setRedirectToDashboard] = useState(false);
+  const [userRole, setUserRole] = useState<string | null>(null); // Añadir estado para el rol del usuario
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -13,29 +16,41 @@ const Login: React.FC = () => {
       return;
     }
 
+    const loginData = {
+      email: email,
+      password: password,
+    };
+
     try {
       const response = await fetch('http://localhost:5000/login', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ CorreoElectronico: email, contrasena: password })
+        body: JSON.stringify(loginData),
+        credentials: 'include' // Asegura que las cookies de sesión se envíen y reciban
       });
 
       const result = await response.json();
       if (response.status === 200) {
-        // Inicio de sesión exitoso
-        // Aquí puedes almacenar la información de inicio de sesión en el estado local o en el almacenamiento local del navegador
         console.log('Inicio de sesión exitoso:', result);
+        setUserRole(result.user.role); // Establecer el rol del usuario
+        setRedirectToDashboard(true); // Establecer la redirección al dashboard
       } else {
-        // Error de inicio de sesión
-        setError(result.error);
+        setError(result.error || 'Error en el inicio de sesión');
       }
     } catch (error) {
-      // Error en la solicitud
-      setError('Error en el envío del formulario');
+      setError('Error en el inicio de sesión');
     }
   };
+
+  if (redirectToDashboard) {
+    if (userRole === 'Cliente') {
+      return <Navigate to="/cliente" />;
+    } else if (userRole === 'Arrendatario') {
+      return <Navigate to="/arrendatario" />;
+    }
+  }
 
   return (
     <div className="container mx-auto mt-8">
@@ -56,6 +71,7 @@ const Login: React.FC = () => {
               id="email"
               type="email"
               placeholder="Correo electrónico"
+              name="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
@@ -69,6 +85,7 @@ const Login: React.FC = () => {
               id="password"
               type="password"
               placeholder="Contraseña"
+              name="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />

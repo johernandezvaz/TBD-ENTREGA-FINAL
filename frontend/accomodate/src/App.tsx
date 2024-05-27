@@ -10,7 +10,8 @@ import TravelWithUsSection from './components/TravelWithUsSection';
 import testimonialsData from './data/TestimonialsData';
 import Login from './screens/Login';
 import Register from './screens/Register';
-import Homepage from './interface/Homepage';
+import HomepageCliente from './interface/HomepageCliente';
+import HomepageArrendatario from './interface/HomepageArrendatario';
 
 function App() {
   const [loggedIn, setLoggedIn] = useState(false);
@@ -43,7 +44,8 @@ function App() {
         } />
         <Route path="/iniciar-sesion" element={<Login />} />
         <Route path="/registrarse" element={<Register />} />
-        <Route path="/home" element={<Homepage />} />
+        <Route path="/cliente" element={<HomepageCliente />} />
+        <Route path="/arrendatario" element={<HomepageArrendatario />} />
       </Routes>
     </Router>
   );

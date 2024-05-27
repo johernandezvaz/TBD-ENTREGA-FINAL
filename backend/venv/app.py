@@ -1,12 +1,16 @@
-import csv
+import random
 from flask import Flask, Response, request, jsonify, session
 from flask_mysqldb import MySQL
 from flask_cors import CORS
 import datetime
 
+from requests import Session
+
 app = Flask(__name__)
 CORS(app)
 app.secret_key = 'supersecretkey'  # Necesario para usar sesiones
+app.config['SESSION_TYPE'] = 'filesystem'
+Session()
 
 # Configuración de la base de datos
 app.config.from_object('config.Config')
@@ -81,12 +85,8 @@ def register():
 
 @app.route('/login', methods=['POST'])
 def login():
-
-    if not request.is_json:
-        return jsonify({"error": "La solicitud debe contener datos JSON"}), 400
-    
-    
-    data = request.json
+    data = request.get_json()
+    print(f"Datos recibidos: {data}")
 
     email = data.get('email')
     password = data.get('password')
@@ -96,42 +96,108 @@ def login():
 
     try:
         cur = mysql.connection.cursor()
-
-        # Verificar las credenciales del usuario
-        cur.execute("SELECT contrasena, tipo_usuario FROM usuario WHERE correo_electronico = %s", (email,))
+        cur.execute("SELECT id_usuario, nombre, apellido, correo_electronico, tipo_usuario FROM usuario WHERE correo_electronico = %s AND contrasena = %s", (email, password))
         user = cur.fetchone()
+        cur.close()
 
-        if user and password == user['contrasena']:
-            # Credenciales válidas, establecer sesión
-            session['email'] = email
-            session['role'] = user['tipo_usuario']
-            return jsonify({"message": "Inicio de sesión exitoso"}), 200
+        if user:
+            # Guardar la información del usuario en la sesión
+            session['user_id'] = user[0]
+            session['user_name'] = user[1]
+            session['user_role'] = user[4]
+            return jsonify({
+                "message": "Inicio de sesión exitoso",
+                "user": {
+                    "id": user[0],
+                    "name": user[1],
+                    "role": user[4]
+                }
+            }), 200
         else:
-            # Credenciales inválidas
             return jsonify({"error": "Correo electrónico o contraseña incorrectos"}), 401
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
 
+
+
 @app.route('/user-info', methods=['GET'])
 def user_info():
-    try:
-        if 'email' in session and 'role' in session:
-            email = session['email']
-            role = session['role']
-            return jsonify({"email": email, "role": role}), 200
-        else:
-            return jsonify({"error": "No hay sesión iniciada"}), 401
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
+    if 'user_id' not in session:
+        return jsonify({"error": "No hay sesión iniciada"}), 401
+    
+    user_id = session['user_id']
+    cur = mysql.connection.cursor()
+    
+    cur.execute("SELECT nombre, tipo_usuario FROM usuario WHERE id = %s", (user_id,))
+    user = cur.fetchone()
+    
+    if not user:
+        return jsonify({"error": "Usuario no encontrado"}), 404
+    
+    # Asumiendo que las propiedades están relacionadas con el usuario
+    cur.execute("SELECT id, name, description FROM properties WHERE user_id = %s", (user_id,))
+    properties = cur.fetchall()
+    
+    cur.close()
+    
+    user_info = {
+        "name": user['nombre'],
+        "role": user['tipo_usuario'],
+        "properties": properties
+    }
+    
+    return jsonify(user_info), 200
 
-
-if __name__ == '__main__':
-    app.run(debug=True)
 
 @app.route('/logout', methods=['POST'])
 def logout():
     session.pop('email', None)
     session.pop('role', None)
     return jsonify({"message": "Sesión cerrada exitosamente"}), 200
+
+@app.route('/cliente-info', methods=['GET'])
+def cliente_info():
+    if 'user_id' not in session:
+        return jsonify({"error": "No hay sesión iniciada"}), 401
+    
+    user_id = session['user_id']
+    cur = mysql.connection.cursor()
+
+    # Obtener la información del usuario
+    cur.execute("SELECT nombre, tipo_usuario FROM usuario WHERE id_usuario = %s", (user_id,))
+    user = cur.fetchone()
+    
+    if not user:
+        return jsonify({"error": "Usuario no encontrado"}), 404
+
+    # Obtener una lista aleatoria de 6 países
+    cur.execute("SELECT nombre_pais FROM pais ORDER BY RAND() LIMIT 6")
+    countries = [row[0] for row in cur.fetchall()]
+    
+    cur.close()
+    
+    user_info = {
+        "name": user[0],
+        "role": user[1],
+        "countries": countries
+    }
+    
+    return jsonify(user_info), 200
+
+@app.route('/arrendatario-properties', methods=['GET'])
+def arrendatario_properties():
+    if 'user_id' not in session:
+        return jsonify({"error": "No hay sesión iniciada"}), 401
+    
+    user_id = session['user_id']
+    cur = mysql.connection.cursor()
+
+    # Obtener las propiedades del arrendatario
+    cur.execute("SELECT id, name, description FROM properties WHERE user_id = %s", (user_id,))
+    properties = [{"id": row[0], "name": row[1], "description": row[2]} for row in cur.fetchall()]
+    
+    cur.close()
+    
+    return jsonify({"properties": properties}), 200

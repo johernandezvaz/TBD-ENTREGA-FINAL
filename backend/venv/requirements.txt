@@ -3,5 +3,4 @@ Flask-MySQLdb
 Flask-Cors
 bcrypt
 datetime
-MySQLdb
-csv
+requests
