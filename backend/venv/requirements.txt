@@ -4,3 +4,4 @@ Flask-Cors
 bcrypt
 datetime
 MySQLdb
+csv

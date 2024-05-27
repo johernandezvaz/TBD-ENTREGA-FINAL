@@ -7,8 +7,9 @@ interface Country {
   name: string;
 }
 
+
 const Register: React.FC = () => {
-  const [redirectToLogin] = useState(false);
+  const [redirectToLogin, setRedirectToLogin] = useState(false);
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -25,15 +26,30 @@ const Register: React.FC = () => {
   useEffect(() => {
     // Fetch países disponibles al cargar el componente
     fetch('http://localhost:5000/countries')
-      .then(response => {
-        if (!response.ok) {
-          throw new Error('Error al obtener países');
-        }
-        return response.json();
+      .then(response => response.text())  // Leer los datos como texto
+      .then(data => {
+        // Convertir los datos de texto en un arreglo de objetos
+        const parsedData = parseTextData(data);
+        setCountries(parsedData);
       })
-      .then((data: Country[]) => setCountries(data))
       .catch(error => console.error('Error fetching countries:', error));
   }, []);
+
+
+  // Función para analizar los datos de texto
+function parseTextData(textData: string): Country[] {
+    const rows = textData.split('\n');
+    const countries = rows.map(row => {
+        const [id, name] = row.split(',').map(item => item.trim());
+        return { id: parseInt(id), name: name }; // Convertir id a número usando parseInt
+    });
+    return countries;
+}
+
+
+
+
+  
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value, type } = e.target;
@@ -43,15 +59,38 @@ const Register: React.FC = () => {
     });
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const { firstName, lastName, email, address, city, country } = formData;
-    if (!firstName || !lastName || !email || !address || !city || !country) {
+    const { firstName, lastName, email, address, city, country, role, password } = formData;
+    if (!firstName || !lastName || !email || !address || !city || !country || !role || !password) {
       setFormError('Por favor complete todos los campos');
       return;
     }
-    // Aquí puedes manejar la lógica de envío del formulario
-    console.log('Formulario enviado:', formData);
+  
+    try {
+      const response = await fetch('http://localhost:5000/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(formData)
+      });
+  
+      const result = await response.json();
+      if (response.status === 200) {
+        console.log('Formulario enviado:', result);
+        // Redirige a la página de inicio de sesión
+        setRedirectToLogin(true);
+      } else if (response.status === 400 && result.error === 'El correo electrónico ya está en uso') {
+        // El correo electrónico ya está en uso, muestra un mensaje de error
+        setFormError('El correo electrónico ya está en uso');
+      } else {
+        // Otro error, muestra el mensaje de error del servidor
+        setFormError(result.error || 'Error en el envío del formulario');
+      }
+    } catch (error) {
+      setFormError('Error en el envío del formulario');
+    }
   };
 
   if (redirectToLogin) {

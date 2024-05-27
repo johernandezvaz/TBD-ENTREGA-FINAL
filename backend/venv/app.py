@@ -1,5 +1,5 @@
-import MySQLdb
-from flask import Flask, request, jsonify, session
+import csv
+from flask import Flask, Response, request, jsonify, session
 from flask_mysqldb import MySQL
 from flask_cors import CORS
 import datetime
@@ -13,69 +13,46 @@ app.config.from_object('config.Config')
 
 mysql = MySQL(app)
 
-def reset_auto_increment(table_name):
-    try:
-        cur = mysql.connection.cursor()
-        cur.callproc('reset_auto_increment', (table_name,))
-        mysql.connection.commit()
-        cur.close()
-    except Exception as e:
-        print("Error al llamar al procedimiento reset_auto_increment:", e)
-
 @app.route('/countries', methods=['GET'])
 def get_countries():
-    try:
-        cur = mysql.connection.cursor()
-        cur.execute("SELECT id_pais, nombre_pais FROM pais")
-        countries = cur.fetchall()
-        cur.close()
-        return jsonify(countries)
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
+    cur = mysql.connection.cursor()
+    cur.execute("SELECT * FROM pais")
+    columns = [column[0] for column in cur.description]  # Obtener los nombres de las columnas
+    countries = [dict(zip(columns, row)) for row in cur.fetchall()]  # Convertir cada fila en un diccionario
+    cur.close()
 
+    countries_text = '\n'.join([f"{country['id_pais']}, {country['nombre_pais']}" for country in countries])
 
-# Endpoint para insertar una ciudad en la tabla ciudad
-@app.route('/insertar-ciudad', methods=['POST'])
-def insertar_ciudad():
-    data = request.get_json()
-    nombre_ciudad = data.get('nombre_ciudad')
-    id_pais = data.get('id_pais')
+    return countries_text
 
-    try:
-        cur = mysql.connection.cursor()
-        cur.execute("INSERT INTO ciudad (nombre_ciudad, id_pais) VALUES (%s, %s)", (nombre_ciudad, id_pais))
-        mysql.connection.commit()
-        cur.close()
-        return jsonify({"message": "Ciudad insertada correctamente"})
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
-
-if __name__ == '__main__':
-    app.run(debug=True)
-
-
-@app.route('/reset_auto_increment', methods=['GET'])
-def reset_auto_increment_route():
-    reset_auto_increment('arrendatarios')
-    reset_auto_increment('clientes')
-    return jsonify({"message": "Auto increment reseteado"}), 200
 
 @app.route('/register', methods=['POST'])
 def register():
     data = request.json
 
-    first_name = data.get('nombre')
-    last_name = data.get('apellido')
-    email = data.get('correo_electronico')
-    address = data.get('direccion')
-    role = data.get('tipo_usuario')
-    password = data.get('contrasena')
+    first_name = data.get('firstName')
+    last_name = data.get('lastName')
+    email = data.get('email')
+    address = data.get('address')
+    role = data.get('role')
+    city_name = data.get('city')  # Obtener el nombre de la ciudad
+    country = data.get('country')
+    password = data.get('password')
 
-    if not first_name or not last_name or not email or not address or not role or not password:
+    if not first_name or not last_name or not email or not address or not country or not role or not password or not city_name:
         return jsonify({"error": "Por favor complete todos los campos"}), 400
 
     try:
         cur = mysql.connection.cursor()
+
+        # Verificar si la ciudad ya existe en la base de datos
+        cur.execute("SELECT * FROM ciudad WHERE nombre_ciudad = %s", (city_name,))
+        existing_city = cur.fetchone()
+
+        # Si la ciudad no existe, agregarla a la tabla ciudad
+        if not existing_city:
+            cur.execute("INSERT INTO ciudad (nombre_ciudad, id_pais) VALUES (%s, %s)", (city_name, country))
+            mysql.connection.commit()
 
         # Verificar si el correo electrónico ya está en uso
         cur.execute("SELECT * FROM usuario WHERE correo_electronico = %s", (email,))
@@ -87,10 +64,11 @@ def register():
 
         # Encriptar la contraseña (si es necesario)
         # Aquí puedes agregar la encriptación si lo deseas
+        current_date = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
         # Insertar el nuevo usuario en la base de datos
-        cur.execute("INSERT INTO usuario (nombre, apellido, correo_electronico, direccion, tipo_usuario, contrasena) VALUES (%s, %s, %s, %s, %s, %s)", 
-                    (first_name, last_name, email, address, role, password))
+        cur.execute("INSERT INTO usuario (nombre, apellido, correo_electronico, direccion, tipo_usuario, contrasena, fecha_registro, id_ciudad, id_pais) VALUES (%s, %s, %s, %s, %s, %s, %s, (SELECT id_ciudad FROM ciudad WHERE nombre_ciudad = %s), %s)", 
+                    (first_name, last_name, email, address, role, password, current_date, city_name, country))
         
         mysql.connection.commit()
         cur.close()
@@ -100,11 +78,18 @@ def register():
         return jsonify({"error": str(e)}), 500
 
 
+
 @app.route('/login', methods=['POST'])
 def login():
+
+    if not request.is_json:
+        return jsonify({"error": "La solicitud debe contener datos JSON"}), 400
+    
+    
     data = request.json
-    email = data.get('correo_electronico')
-    password = data.get('contrasena')
+
+    email = data.get('email')
+    password = data.get('password')
 
     if not email or not password:
         return jsonify({"error": "Por favor, proporcione correo electrónico y contraseña"}), 400
