@@ -243,3 +243,25 @@ def add_property():
 if __name__ == '__main__':
     app.run(debug=True)
 
+@app.route('/user-cities', methods=['GET'])
+def user_cities():
+    if 'user_id' not in session:
+        return jsonify({"error": "No hay sesión iniciada"}), 401
+    
+    user_id = session['user_id']
+    cur = mysql.connection.cursor()
+
+    # Obtener el id del país del usuario
+    cur.execute("SELECT id_pais FROM usuario WHERE id_usuario = %s", (user_id,))
+    country_id = cur.fetchone()[0]
+
+    # Obtener las ciudades del país del usuario
+    cur.execute("SELECT id_ciudad, nombre_ciudad FROM ciudad WHERE id_pais = %s", (country_id,))
+    cities = [{"id": row[0], "name": row[1]} for row in cur.fetchall()]
+    
+    cur.close()
+    
+    return jsonify({"cities": cities}), 200
+
+
+

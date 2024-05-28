@@ -14,6 +14,7 @@ const HomepageArrendatario: React.FC = () => {
   const [showAddPropertyForm, setShowAddPropertyForm] = useState<boolean>(false);
   const [newPropertyName, setNewPropertyName] = useState<string>('');
   const [newPropertyDescription, setNewPropertyDescription] = useState<string>('');
+  const [cities, setCities] = useState<string[]>([]); // Cambiamos el estado para almacenar solo los nombres de las ciudades
   const [newPropertyCity, setNewPropertyCity] = useState<string>('');
   const [newPropertyAddress, setNewPropertyAddress] = useState<string>('');
 
@@ -25,7 +26,7 @@ const HomepageArrendatario: React.FC = () => {
           headers: {
             'Content-Type': 'application/json',
           },
-          credentials: 'include', // Asegura que las cookies de sesión se envíen y reciban
+          credentials: 'include',
         });
 
         if (!response.ok) {
@@ -49,7 +50,7 @@ const HomepageArrendatario: React.FC = () => {
         headers: {
           'Content-Type': 'application/json',
         },
-        credentials: 'include', // Asegura que las cookies de sesión se envíen y reciban
+        credentials: 'include',
         body: JSON.stringify({
           name: newPropertyName,
           description: newPropertyDescription,
@@ -62,13 +63,12 @@ const HomepageArrendatario: React.FC = () => {
         throw new Error('Error al agregar la propiedad');
       }
 
-      // Refrescar la lista de propiedades después de agregar una nueva
       const propertiesResponse = await fetch('http://localhost:5000/arrendatario-properties', {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
         },
-        credentials: 'include', // Asegura que las cookies de sesión se envíen y reciban
+        credentials: 'include',
       });
 
       if (!propertiesResponse.ok) {
@@ -77,15 +77,40 @@ const HomepageArrendatario: React.FC = () => {
 
       const result = await propertiesResponse.json();
       setProperties(result.properties);
-      setShowAddPropertyForm(false); // Ocultar el formulario después de agregar una nueva propiedad
-      setNewPropertyName(''); // Limpiar el campo de nombre de la propiedad
-      setNewPropertyDescription(''); // Limpiar el campo de descripción de la propiedad
-      setNewPropertyCity(''); // Limpiar el campo de ciudad de la propiedad
-      setNewPropertyAddress(''); // Limpiar el campo de dirección de la propiedad
+      setShowAddPropertyForm(false);
+      setNewPropertyName('');
+      setNewPropertyDescription('');
+      setNewPropertyCity('');
+      setNewPropertyAddress('');
     } catch (error) {
       setError('Error al agregar la propiedad');
     }
   };
+
+  useEffect(() => {
+    const fetchCities = async () => {
+      try {
+        const response = await fetch('http://localhost:5000/user-cities', {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          credentials: 'include',
+        });
+
+        if (!response.ok) {
+          throw new Error('Error al obtener las ciudades');
+        }
+
+        const result = await response.json();
+        setCities(result.cities);
+      } catch (error) {
+        setError('Error al obtener las ciudades');
+      }
+    };
+
+    fetchCities();
+  }, []);
 
   if (error) {
     return <div>{error}</div>;
@@ -110,51 +135,55 @@ const HomepageArrendatario: React.FC = () => {
                   value={newPropertyName}
                   onChange={(e) => setNewPropertyName(e.target.value)}
                   className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline mb-2"
-                />
-                <label className="block text-gray-700 text-sm font-bold mb-2">Descripción de la Propiedad</label>
-                <textarea
-                  value={newPropertyDescription}
-                  name="description"
-                  onChange={(e) => setNewPropertyDescription(e.target.value)}
-                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline mb-2"
-                />
-                <label className="block text-gray-700 text-sm font-bold mb-2">Ciudad de la Propiedad</label>
-                <input
-                  type="text"
-                  name="city"
-                  value={newPropertyCity}
-                  onChange={(e) => setNewPropertyCity(e.target.value)}
-                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline mb-2"
-                />
-                <label className="block text-gray-700 text-sm font-bold mb-2">Dirección de la Propiedad</label>
-                <input
-                  type="text"
-                  name="address"
-                  value={newPropertyAddress}
-                  onChange={(e) => setNewPropertyAddress(e.target.value)}
-                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline mb-2"
-                />
-                <button onClick={handleAddProperty} className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded mt-4">
-                  Agregar
-                </button>
-              </div>
-            )}
-          </div>
-        ) : (
-          <ul className="list-disc list-inside">
-            {properties.map((property) => (
-              <li key={property.id}>
-                <h3 className="text-lg font-semibold">{property.name}</h3>
-                <p>{property.description}</p>
-                <p>Ciudad: {property.city}</p>
-                <p>Dirección: {property.address}</p>
-              </li>
-            ))}
-          </ul>
-        )}
+                  />
+                  <label className="block text-gray-700 text-sm font-bold mb-2">Descripción de la Propiedad</label>
+                  <textarea
+                    value={newPropertyDescription}
+                    name="description"
+                    onChange={(e) => setNewPropertyDescription(e.target.value)}
+                    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline mb-2"
+                  />
+                  <label className="block text-gray-700 text-sm font-bold mb-2">Ciudad de la Propiedad</label>
+                  <select
+                    value={newPropertyCity}
+                    onChange={(e) => setNewPropertyCity(e.target.value)}
+                    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline mb-2"
+                  >
+                    <option value="">Selecciona una ciudad</option>
+                    {cities.map(city => (
+                      <option key={city} value={city}>{city}</option>
+                    ))}
+                  </select>
+                  <label className="block text-gray-700 text-sm font-bold mb-2">Dirección de la Propiedad</label>
+                  <input
+                    type="text"
+                    name="address"
+                    value={newPropertyAddress}
+                    onChange={(e) => setNewPropertyAddress(e.target.value)}
+                    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline mb-2"
+                  />
+                  <button onClick={handleAddProperty} className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded mt-4">
+                    Agregar
+                  </button>
+                </div>
+              )}
+            </div>
+          ) : (
+            <ul className="list-disc list-inside">
+              {properties.map((property) => (
+                <li key={property.id}>
+                  <h3 className="text-lg font-semibold">{property.name}</h3>
+                  <p>{property.description}</p>
+                  <p>Ciudad: {property.city}</p>
+                  <p>Dirección: {property.address}</p>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
       </div>
-    </div>
-  );
-};
-
-export default HomepageArrendatario;
+    );
+  };
+  
+  export default HomepageArrendatario;
+  
