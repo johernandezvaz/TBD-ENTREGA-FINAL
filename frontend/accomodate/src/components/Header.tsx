@@ -15,7 +15,7 @@ const Header: React.FC<HeaderProps> = ({ loggedIn, onLogout }) => {
           <ul className="flex space-x-4">
             {loggedIn ? (
               <>
-                <li><a href="/home" className="text-alternative-300 hover:text-gray-200">Inicio</a></li>
+                <li><a href="/" className="text-alternative-300 hover:text-gray-200">Inicio</a></li>
                 <li><a href="/alojamientos" className="text-alternative-300 hover:text-gray-200">Alojamientos</a></li>
                 {/* Agrega más elementos según el rol si es necesario */}
                 <li><button onClick={onLogout} className="text-alternative-300 hover:text-gray-200">Cerrar sesión</button></li>

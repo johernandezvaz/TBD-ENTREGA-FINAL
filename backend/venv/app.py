@@ -1,13 +1,16 @@
 import random
-from flask import Flask, Response, request, jsonify, session
+import MySQLdb
+from flask import Flask, request, jsonify, session
 from flask_mysqldb import MySQL
 from flask_cors import CORS
 import datetime
+from config import Config
 
 from requests import Session
 
 app = Flask(__name__)
-CORS(app)
+CORS(app, supports_credentials=True)
+app.config.from_object(Config)
 app.secret_key = 'supersecretkey'  # Necesario para usar sesiones
 app.config['SESSION_TYPE'] = 'filesystem'
 Session()
@@ -95,31 +98,33 @@ def login():
         return jsonify({"error": "Por favor, proporcione correo electrónico y contraseña"}), 400
 
     try:
-        cur = mysql.connection.cursor()
+        cur = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
         cur.execute("SELECT id_usuario, nombre, apellido, correo_electronico, tipo_usuario FROM usuario WHERE correo_electronico = %s AND contrasena = %s", (email, password))
         user = cur.fetchone()
         cur.close()
 
         if user:
             # Guardar la información del usuario en la sesión
-            session['user_id'] = user[0]
-            session['user_name'] = user[1]
-            session['user_role'] = user[4]
+            session['user_id'] = user['id_usuario']
+            session['user_name'] = user['nombre']
+            session['user_role'] = user['tipo_usuario']
             return jsonify({
                 "message": "Inicio de sesión exitoso",
                 "user": {
-                    "id": user[0],
-                    "name": user[1],
-                    "role": user[4]
+                    "id": user['id_usuario'],
+                    "name": user['nombre'],
+                    "role": user['tipo_usuario']
                 }
             }), 200
         else:
             return jsonify({"error": "Correo electrónico o contraseña incorrectos"}), 401
 
     except Exception as e:
+        print(f"Error en el servidor: {e}")
         return jsonify({"error": str(e)}), 500
 
-
+if __name__ == '__main__':
+    app.run(debug=True)
 
 
 @app.route('/user-info', methods=['GET'])
@@ -195,9 +200,46 @@ def arrendatario_properties():
     cur = mysql.connection.cursor()
 
     # Obtener las propiedades del arrendatario
-    cur.execute("SELECT id, name, description FROM properties WHERE user_id = %s", (user_id,))
+    cur.execute("SELECT id_alojamiento, nombre_alojamiento, descripcion FROM alojamiento WHERE id_anfitrion = %s", (user_id,))
     properties = [{"id": row[0], "name": row[1], "description": row[2]} for row in cur.fetchall()]
     
     cur.close()
     
     return jsonify({"properties": properties}), 200
+
+@app.route('/add-property', methods=['POST'])
+def add_property():
+    if 'user_id' not in session:
+        return jsonify({"error": "No hay sesión iniciada"}), 401
+
+    data = request.json
+
+    # Obtener los datos del formulario enviado por el cliente
+    name = data.get('name')
+    description = data.get('description')
+    address = data.get('address')
+    city_id = data.get('city_id')
+    # Asegúrate de agregar más campos según la estructura de tu tabla alojamiento
+
+    if not name or not address or not city_id:
+        return jsonify({"error": "Por favor complete todos los campos requeridos"}), 400
+
+    try:
+        cur = mysql.connection.cursor()
+
+        # Insertar el nuevo alojamiento en la base de datos
+        cur.execute("INSERT INTO alojamiento (nombre_alojamiento, descripcion, direccion, id_ciudad, id_anfitrion, precio) VALUES (%s, %s, %s, %s, %s, %s)", 
+                    (name, description, address, city_id, session['user_id'], 0.0))  # Precio inicialmente 0.0, puedes cambiarlo según tu lógica
+
+        mysql.connection.commit()
+        cur.close()
+        return jsonify({"message": "Alojamiento agregado exitosamente"}), 200
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+# Otras rutas y funciones aquí...
+
+if __name__ == '__main__':
+    app.run(debug=True)
+

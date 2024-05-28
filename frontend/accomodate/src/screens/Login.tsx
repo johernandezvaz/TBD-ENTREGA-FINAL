@@ -1,12 +1,16 @@
 import React, { useState } from 'react';
 import { Navigate } from 'react-router-dom';
 
-const Login: React.FC = () => {
+interface LoginProps {
+  onLogin: (role: string) => void;
+}
+
+const Login: React.FC<LoginProps> = ({ onLogin }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [redirectToDashboard, setRedirectToDashboard] = useState(false);
-  const [userRole, setUserRole] = useState<string | null>(null); // Añadir estado para el rol del usuario
+  const [userRole, setUserRole] = useState<string | null>(null);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -28,14 +32,14 @@ const Login: React.FC = () => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(loginData),
-        credentials: 'include' // Asegura que las cookies de sesión se envíen y reciban
+        credentials: 'include'
       });
 
       const result = await response.json();
       if (response.status === 200) {
-        console.log('Inicio de sesión exitoso:', result);
-        setUserRole(result.user.role); // Establecer el rol del usuario
-        setRedirectToDashboard(true); // Establecer la redirección al dashboard
+        setUserRole(result.user.role);
+        setRedirectToDashboard(true);
+        onLogin(result.user.role); // Informar al componente principal del inicio de sesión exitoso
       } else {
         setError(result.error || 'Error en el inicio de sesión');
       }
