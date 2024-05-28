@@ -1,16 +1,16 @@
-# Proyecto XYZ
+# Accomodate
 
-Este es el repositorio del proyecto XYZ, una aplicación web desarrollada para facilitar la gestión de propiedades inmobiliarias. La aplicación permite a los usuarios registrados buscar propiedades, ver detalles de las propiedades disponibles y administrar su perfil de usuario.
+Bienvenido al repositorio de Accomodate, una aplicación web diseñada para facilitar la gestión de propiedades inmobiliarias. A continuación, encontrarás una descripción detallada del proyecto, sus componentes principales y las tecnologías utilizadas.
 
 ## Descripción del Proyecto
 
-El objetivo principal de este proyecto es proporcionar una plataforma intuitiva para que los usuarios puedan buscar y gestionar propiedades inmobiliarias de manera eficiente. La aplicación está diseñada para ser fácil de usar y brindar una experiencia fluida al usuario.
+Accomodate es una plataforma que permite a los usuarios buscar propiedades disponibles para alquilar o comprar. Los usuarios pueden registrarse, iniciar sesión y gestionar su perfil, así como ver detalles de las propiedades y ponerse en contacto con los propietarios o agentes inmobiliarios.
 
 ## Componentes
 
 ### Backend
 
-El backend de la aplicación está desarrollado en Python utilizando el framework Flask. Se encarga de manejar la lógica del negocio, la autenticación de usuarios, y la comunicación con la base de datos.
+El backend de Accomodate está desarrollado en Python utilizando Flask. Se encarga de manejar la lógica del negocio, la autenticación de usuarios y la comunicación con la base de datos.
 
 #### Llamadas a Flask
 
@@ -21,7 +21,7 @@ El backend de la aplicación está desarrollado en Python utilizando el framewor
 
 ### Frontend
 
-El frontend de la aplicación está desarrollado en React.js. Se encarga de proporcionar una interfaz de usuario interactiva y receptiva para que los usuarios puedan interactuar con la aplicación.
+El frontend de Accomodate está desarrollado en React.js. Proporciona una interfaz de usuario interactiva y receptiva para que los usuarios puedan interactuar con la aplicación.
 
 #### Componentes
 
