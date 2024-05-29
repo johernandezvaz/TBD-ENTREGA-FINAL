@@ -1,15 +1,16 @@
 import random
 import MySQLdb
-from flask import Flask, request, jsonify, session
+from flask import Flask, request, jsonify, session, redirect
 from flask_mysqldb import MySQL
 from flask_cors import CORS
 import datetime
+from datetime import date
 from config import Config
 
 from requests import Session
 
 app = Flask(__name__)
-CORS(app, supports_credentials=True)
+CORS(app, supports_credentials=True, origins=["http://localhost:5173"])
 app.config.from_object(Config)
 app.secret_key = 'supersecretkey'  # Necesario para usar sesiones
 app.config['SESSION_TYPE'] = 'filesystem'
@@ -330,7 +331,121 @@ def get_all_countries():
     return countries_text
 
 
+@app.route('/reserva', methods=['POST', 'OPTIONS'])
+def reserva():
+    if request.method == 'OPTIONS':
+        return _build_cors_preflight_response()
+
+    if request.method == 'POST':
+        data = request.json
+        if 'idAlojamiento' not in data:
+            return _corsify_actual_response(jsonify({'error': 'Falta idAlojamiento en los datos de la solicitud'}), 400)
+
+
+    
+    id_alojamiento = data['idAlojamiento']
+    session['id_alojamiento'] = id_alojamiento
+
+    return _corsify_actual_response(jsonify({'message': 'Reserva temporalmente guardada en sesión'}))
+
+def _build_cors_preflight_response():
+    response = jsonify({'message': 'Preflight request received'})
+    response.headers.add("Access-Control-Allow-Origin", "*")
+    response.headers.add("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
+    response.headers.add("Access-Control-Allow-Headers", "Content-Type")
+    return response
+
+def _corsify_actual_response(response, status_code=200):
+    response.status_code = status_code
+    response.headers.add("Access-Control-Allow-Origin", "*")
+    response.headers.add("Access-Control-Allow-Credentials", "true")
+    return response
+
+if __name__ == '__main__':
+    app.run(debug=True)
 
 
 
+
+@app.route('/property/<int:id>', methods=['GET'])
+def get_property(id):
+    try:
+        cur = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+        query = """
+            SELECT a.id_alojamiento, a.nombre_alojamiento, a.descripcion, a.direccion, a.precio, c.nombre_ciudad, u.nombre AS anfitrion
+            FROM alojamiento a
+            LEFT JOIN ciudad c ON a.id_ciudad = c.id_ciudad
+            LEFT JOIN usuario u ON a.id_anfitrion = u.id_usuario
+            WHERE a.id_alojamiento = %s
+        """
+        cur.execute(query, (id,))
+        property = cur.fetchone()
+        cur.close()
+        
+        if property:
+            return jsonify(property), 200
+        else:
+            return jsonify({"error": "Property not found"}), 404
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route('/property/<int:id>/availability', methods=['GET'])
+def get_availability(id):
+    cur = mysql.connection.cursor()
+
+    query = """
+    SELECT fecha 
+    FROM calendario_disponibilidad_propiedad 
+    WHERE id_alojamiento = %s AND disponible = 1 AND fecha >= %s
+    """
+    today = date.today()
+    cur.execute(query, (id, today))
+    
+    result = cur.fetchall()
+    dates = [row[0].isoformat() for row in result]
+
+    cur.close()
+    
+    return jsonify({'availability': dates})
+
+if __name__ == '__main__':
+    app.run(debug=True)
+
+@app.route('/confirmar-reserva', methods=['POST', 'OPTIONS'])
+def confirmar_reserva():
+    if request.method == 'OPTIONS':
+        return _build_cors_preflight_response()
+
+    data = request.json
+    fecha_inicio = data.get('fechaInicio')
+    fecha_fin = data.get('fechaFin')
+    id_huesped = session.get('user_id')
+    id_alojamiento = session.get('id_alojamiento')
+
+    if not id_huesped or not id_alojamiento:
+        return _corsify_actual_response(jsonify({"error": "Sesión no válida o datos incompletos"}), 400)
+
+    try:
+        cur = mysql.connection.cursor()
+        cur.execute("INSERT INTO reserva (fecha_inicio, fecha_fin, id_huesped, id_alojamiento) VALUES (%s, %s, %s, %s)",
+                    (fecha_inicio, fecha_fin, id_huesped, id_alojamiento))
+        mysql.connection.commit()
+        cur.close()
+        return _corsify_actual_response(jsonify({"message": "Reserva confirmada"}), 200)
+    except Exception as e:
+        return _corsify_actual_response(jsonify({"error": str(e)}), 500)
+    
+@app.route('/session', methods=['GET', 'OPTIONS'])
+def get_session():
+    if request.method == 'OPTIONS':
+        return _build_cors_preflight_response()
+
+    id_huesped = session.get('user_id')
+    id_alojamiento = session.get('id_alojamiento')
+
+    if not id_huesped or not id_alojamiento:
+        return _corsify_actual_response(jsonify({"error": "Sesión no válida o datos incompletos"}), 400)
+
+    return _corsify_actual_response(jsonify({"id_huesped": id_huesped, "id_alojamiento": id_alojamiento}), 200)
 

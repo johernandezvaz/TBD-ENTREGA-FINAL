@@ -13,6 +13,7 @@ import Register from './screens/Register';
 import HomepageCliente from './interface/HomepageCliente';
 import HomepageArrendatario from './interface/HomepageArrendatario';
 import AddPropertyForm from './interface/arrendatario/AddPropertyForm';
+import Booking from './interface/cliente/Booking';
 
 function App() {
   const [loggedIn, setLoggedIn] = useState(false);
@@ -74,6 +75,7 @@ function App() {
         <Route path="/cliente" element={loggedIn && role === 'Cliente' ? <HomepageCliente /> : <Navigate to="/iniciar-sesion" />} />
         <Route path="/arrendatario" element={loggedIn && role === 'Arrendatario' ? <HomepageArrendatario /> : <Navigate to="/iniciar-sesion" />} />
         <Route path="/add-property" element={<AddPropertyForm />} />
+        <Route path="/reserva/:id" element={<Booking />} />
       </Routes>
     </Router>
   );
