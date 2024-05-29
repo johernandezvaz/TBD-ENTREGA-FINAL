@@ -6,7 +6,7 @@ interface HeaderProps {
   onLogout: () => void;
 }
 
-const Header: React.FC<HeaderProps> = ({ loggedIn, onLogout }) => {
+const Header: React.FC<HeaderProps> = ({ loggedIn, role, onLogout }) => {
   return (
     <header className="bg-secondary-200 p-4">
       <div className="container mx-auto flex justify-between items-center">
@@ -16,8 +16,8 @@ const Header: React.FC<HeaderProps> = ({ loggedIn, onLogout }) => {
             {loggedIn ? (
               <>
                 <li><a href="/" className="text-alternative-300 hover:text-gray-200">Inicio</a></li>
-                <li><a href="/alojamientos" className="text-alternative-300 hover:text-gray-200">Alojamientos</a></li>
-                {/* Agrega más elementos según el rol si es necesario */}
+                {role === 'Cliente' && <li><a href="/clientes" className="text-alternative-300 hover:text-gray-200">Cliente</a></li>}
+                {role === 'Arrendatario' && <li><a href="/arrendatario" className="text-alternative-300 hover:text-gray-200">Arrendatario</a></li>}
                 <li><button onClick={onLogout} className="text-alternative-300 hover:text-gray-200">Cerrar sesión</button></li>
               </>
             ) : (

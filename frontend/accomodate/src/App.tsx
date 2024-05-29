@@ -12,6 +12,7 @@ import Login from './screens/Login';
 import Register from './screens/Register';
 import HomepageCliente from './interface/HomepageCliente';
 import HomepageArrendatario from './interface/HomepageArrendatario';
+import AddPropertyForm from './interface/arrendatario/AddPropertyForm';
 
 function App() {
   const [loggedIn, setLoggedIn] = useState(false);
@@ -72,6 +73,7 @@ function App() {
         <Route path="/registrarse" element={<Register />} />
         <Route path="/cliente" element={loggedIn && role === 'Cliente' ? <HomepageCliente /> : <Navigate to="/iniciar-sesion" />} />
         <Route path="/arrendatario" element={loggedIn && role === 'Arrendatario' ? <HomepageArrendatario /> : <Navigate to="/iniciar-sesion" />} />
+        <Route path="/add-property" element={<AddPropertyForm />} />
       </Routes>
     </Router>
   );

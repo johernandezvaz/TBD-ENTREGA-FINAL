@@ -199,13 +199,33 @@ def arrendatario_properties():
     user_id = session['user_id']
     cur = mysql.connection.cursor()
 
-    # Obtener las propiedades del arrendatario
-    cur.execute("SELECT id_alojamiento, nombre_alojamiento, descripcion FROM alojamiento WHERE id_anfitrion = %s", (user_id,))
-    properties = [{"id": row[0], "name": row[1], "description": row[2]} for row in cur.fetchall()]
+    # Obtener las propiedades del arrendatario junto con el nombre de la ciudad
+    query = """
+        SELECT a.id_alojamiento, a.nombre_alojamiento, a.descripcion, c.nombre_ciudad, a.direccion
+        FROM alojamiento a
+        LEFT JOIN ciudad c ON a.id_ciudad = c.id_ciudad
+        WHERE a.id_anfitrion = %s
+    """
+    cur.execute(query, (user_id,))
+    properties = [
+        {
+            "id": row[0],
+            "name": row[1],
+            "description": row[2],
+            "city": row[3],  # Agregamos el nombre de la ciudad
+            "address": row[4]
+        } 
+        for row in cur.fetchall()
+    ]
     
     cur.close()
+
+    print(properties)
     
     return jsonify({"properties": properties}), 200
+
+
+
 
 @app.route('/add-property', methods=['POST'])
 def add_property():
@@ -262,6 +282,55 @@ def user_cities():
     cur.close()
     
     return jsonify({"cities": cities}), 200
+
+@app.route('/properties', methods=['GET'])
+def get_properties_by_country():
+    country = request.args.get('country')
+    if not country:
+        return jsonify({"error": "Se requiere el parámetro 'country'"}), 400
+
+    try:
+        cur = mysql.connection.cursor()
+
+        # Obtener las propiedades por país
+        cur.execute("""
+            SELECT a.id_alojamiento, a.nombre_alojamiento, a.descripcion, c.nombre_ciudad, a.direccion
+            FROM alojamiento a
+            LEFT JOIN ciudad c ON a.id_ciudad = c.id_ciudad
+            LEFT JOIN pais p ON c.id_pais = p.id_pais
+            WHERE p.nombre_pais = %s
+        """, (country,))
+        properties = [
+            {
+                "id": row[0],
+                "name": row[1],
+                "description": row[2],
+                "city": row[3],
+                "address": row[4]
+            } 
+            for row in cur.fetchall()
+        ]
+        cur.close()
+
+        return jsonify({"properties": properties}), 200
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route('/all-countries', methods=['GET'])
+def get_all_countries():
+    cur = mysql.connection.cursor()
+    cur.execute("SELECT * FROM pais")
+    columns = [column[0] for column in cur.description]  # Obtener los nombres de las columnas
+    countries = [dict(zip(columns, row)) for row in cur.fetchall()]  # Convertir cada fila en un diccionario
+    cur.close()
+
+    countries_text = '\n'.join([f"{country['id_pais']}, {country['nombre_pais']}" for country in countries])
+
+    return countries_text
+
+
+
 
 
 
