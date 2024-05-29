@@ -1,0 +1,70 @@
+INSERT INTO usuario (nombre, apellido, correo_electronico, direccion, id_pais, id_ciudad, contrasena, tipo_usuario, fecha_registro) VALUES
+('María', 'García', 'maria@email.com', 'Calle Principal 456', 141, 1, 'maria123', 'Cliente', '2024-05-28'),
+('Pedro', 'Martínez', 'pedro@email.com', 'Avenida Central 789', 141, 2, 'pedro123', 'Cliente', '2024-05-28'),
+('Ana', 'López', 'ana@email.com', 'Plaza Mayor 321', 141, 3, 'ana123', 'Arrendatario', '2024-05-28'),
+('Juan', 'Hernández', 'juan@email.com', 'Paseo de las Flores 987', 141, 4, 'juan123', 'Arrendatario', '2024-05-28'),
+('Sofía', 'Pérez', 'sofia@email.com', 'Avenida Revolución 654', 141, 5, 'sofia123', 'Cliente', '2024-05-28'),
+('Carlos', 'Gómez', 'carlos@email.com', 'Boulevard Independencia 753', 141, 6, 'carlos123', 'Arrendatario', '2024-05-28'),
+('Luisa', 'Rodríguez', 'luisa@email.com', 'Callejón del Sol 852', 141, 7, 'luisa123', 'Cliente', '2024-05-28'),
+('Javier', 'González', 'javier@email.com', 'Avenida Reforma 159', 141, 8, 'javier123', 'Arrendatario', '2024-05-28'),
+('Laura', 'Díaz', 'laura@email.com', 'Pasaje Colón 753', 141, 9, 'laura123', 'Cliente', '2024-05-28'),
+('Andrés', 'Martínez', 'andres@email.com', 'Avenida Juárez 357', 141, 10, 'andres123', 'Arrendatario', '2024-05-28');
+
+INSERT INTO usuario (nombre, apellido, correo_electronico, direccion, id_pais, id_ciudad, contrasena, tipo_usuario, fecha_registro) VALUES
+('Valeria', 'Sánchez', 'valeria@email.com', 'Calle Nueva 456', 141, 11, 'valeria123', 'Cliente', '2024-05-28'),
+('Pablo', 'Ramírez', 'pablo@email.com', 'Avenida Principal 789', 141, 12, 'pablo123', 'Arrendatario', '2024-05-28'),
+('Daniela', 'Torres', 'daniela@email.com', 'Plaza Central 321', 141, 13, 'daniela123', 'Cliente', '2024-05-28'),
+('Martín', 'Flores', 'martin@email.com', 'Paseo del Río 987', 141, 14, 'martin123', 'Arrendatario', '2024-05-28'),
+('Lucía', 'Herrera', 'lucia@email.com', 'Avenida del Sol 654', 141, 15, 'lucia123', 'Cliente', '2024-05-28'),
+('Diego', 'López', 'diego@email.com', 'Boulevard de la Independencia 753', 141, 16, 'diego123', 'Arrendatario', '2024-05-28'),
+('Gabriela', 'Gómez', 'gabriela@email.com', 'Callejón de la Luna 852', 141, 17, 'gabriela123', 'Cliente', '2024-05-28'),
+('Alejandro', 'Hernández', 'alejandro@email.com', 'Pasaje de las Estrellas 159', 141, 18, 'alejandro123', 'Arrendatario', '2024-05-28'),
+('Fernanda', 'Martínez', 'fernanda@email.com', 'Avenida Morelos 753', 141, 19, 'fernanda123', 'Cliente', '2024-05-28'),
+('Roberto', 'Díaz', 'roberto@email.com', 'Calle de la Paz 357', 141, 20, 'roberto123', 'Arrendatario', '2024-05-28');
+
+INSERT INTO usuario (nombre, apellido, correo_electronico, direccion, id_pais, id_ciudad, contrasena, tipo_usuario, fecha_registro)
+VALUES
+('Juan', 'García', 'juan.garcia@example.com', 'Av. Revolución 123', 141, 1, 'juancito123', 'Cliente', CURDATE()),
+('María', 'López', 'maria.lopez@example.com', 'Calle Principal 456', 141, 1, 'maria456', 'Cliente', CURDATE()),
+('Carlos', 'Martínez', 'carlos.martinez@example.com', 'Blvd. Constitución 789', 141, 1, 'carlitos789', 'Cliente', CURDATE()),
+('Ana', 'Hernández', 'ana.hernandez@example.com', 'Av. Hidalgo 321', 141, 1, 'ana321', 'Cliente', CURDATE()),
+('Pedro', 'Sánchez', 'pedro.sanchez@example.com', 'Calle Juárez 987', 141, 1, 'pedrito987', 'Cliente', CURDATE()),
+('Luisa', 'Gómez', 'luisa.gomez@example.com', 'Av. Reforma 654', 141, 1, 'luisita654', 'Cliente', CURDATE()),
+('Javier', 'Díaz', 'javier.diaz@example.com', 'Calle Libertad 234', 141, 1, 'javier234', 'Cliente', CURDATE()),
+('Laura', 'Pérez', 'laura.perez@example.com', 'Av. Morelos 876', 141, 1, 'laura876', 'Cliente', CURDATE()),
+('Alejandro', 'Rodríguez', 'alejandro.rodriguez@example.com', 'Calle Independencia 543', 141, 1, 'alejandro543', 'Cliente', CURDATE()),
+('Gabriela', 'Flores', 'gabriela.flores@example.com', 'Blvd. Madero 210', 141, 1, 'gabriela210', 'Cliente', CURDATE()),
+('Roberto', 'Gutiérrez', 'roberto.gutierrez@example.com', 'Av. Zaragoza 789', 141, 1, 'roberto789', 'Cliente', CURDATE()),
+('Sofía', 'Torres', 'sofia.torres@example.com', 'Calle 5 de Mayo 432', 141, 1, 'sofia432', 'Cliente', CURDATE()),
+('Daniel', 'Ortega', 'daniel.ortega@example.com', 'Blvd. López Mateos 567', 141, 1, 'daniel567', 'Cliente', CURDATE()),
+('Fernanda', 'Ramírez', 'fernanda.ramirez@example.com', 'Av. Cuauhtémoc 876', 141, 1, 'fernanda876', 'Cliente', CURDATE()),
+('Ricardo', 'Reyes', 'ricardo.reyes@example.com', 'Calle Allende 543', 141, 1, 'ricardo543', 'Cliente', CURDATE()),
+('Verónica', 'Morales', 'veronica.morales@example.com', 'Av. Miguel Hidalgo 210', 141, 1, 'veronica210', 'Cliente', CURDATE()),
+('José', 'Chávez', 'jose.chavez@example.com', 'Calle Colón 789', 141, 1, 'jose789', 'Cliente', CURDATE()),
+('Paula', 'Vargas', 'paula.vargas@example.com', 'Blvd. Insurgentes 432', 141, 1, 'paula432', 'Cliente', CURDATE()),
+('Martín', 'Jiménez', 'martin.jimenez@example.com', 'Av. Universidad 567', 141, 1, 'martin567', 'Cliente', CURDATE()),
+('Elena', 'Suárez', 'elena.suarez@example.com', 'Calle Revillagigedo 876', 141, 1, 'elena876', 'Cliente', CURDATE());
+
+INSERT INTO usuario (nombre, apellido, correo_electronico, direccion, id_pais, id_ciudad, contrasena, tipo_usuario, fecha_registro)
+VALUES
+('Sophie', 'Martin', 'sophie.martin@example.com', 'Rue de la Liberté 123', 73, 1, 'sophie123', 'Cliente', CURDATE()),
+('Maxime', 'Lefevre', 'maxime.lefevre@example.com', 'Avenue des Champs 456', 73, 1, 'maxime456', 'Cliente', CURDATE()),
+('Elena', 'Kovalenko', 'elena.kovalenko@example.com', 'Ulitsa Lenina 789', 181, 1, 'elena789', 'Cliente', CURDATE()),
+('Mateusz', 'Nowak', 'mateusz.nowak@example.com', 'Aleja Jana Pawla II 321', 172, 1, 'mateusz321', 'Cliente', CURDATE()),
+('Marta', 'Garcia', 'marta.garcia@example.com', 'Calle de Alcala 987', 123, 1, 	'marta987', 'Cliente', CURDATE()),
+('Antonio', 'Russo', 'antonio.russo@example.com', 'Via Roma 654', 122, 1, 'antonio654', 'Cliente', CURDATE()),
+('Julia', 'Andersen', 'julia.andersen@example.com', 'Gammel Kongevej 234', 58, 1, 'julia234', 'Cliente', CURDATE()),
+('Lukas', 'Novak', 'lukas.novak@example.com', 'Opletalova 876', 61, 1, 'lukas876', 'Cliente', CURDATE()),
+('Maria', 'Silva', 'maria.silva@example.com', 'Rua de Santa Catarina 543', 17, 1, 'maria543', 'Cliente', CURDATE()),
+('Piotr', 'Nowakowski', 'piotr.nowakowski@example.com', 'Aleja Solidarnosci 210', 172, 1, 'piotr210', 'Cliente', CURDATE()),
+('Emma', 'Dubois', 'emma.dubois@example.com', 'Rue du Faubourg 789', 73, 1, 'emma789', 'Cliente', CURDATE()),
+('Oscar', 'Jensen', 'oscar.jensen@example.com', 'Vesterbrogade 432', 57, 1, 'oscar432', 'Cliente', CURDATE()),
+('Sofia', 'Santos', 'sofia.santos@example.com', 'Avenida da Liberdade 567', 17, 1, 'sofia567', 'Cliente', CURDATE()),
+('Nikolai', 'Ivanov', 'nikolai.ivanov@example.com', 'Ulitsa Gagarina 876', 195, 1, 'nikolai876', 'Cliente', CURDATE()),
+('Isabella', 'Ferrari', 'isabella.ferrari@example.com', 'Via Giuseppe Verdi 543', 122, 1, 'isabella543', 'Cliente', CURDATE()),
+('Johan', 'Lund', 'johan.lund@example.com', 'Kungsgatan 210', 193, 1, 'johan210', 'Cliente', CURDATE()),
+('Laura', 'Moreno', 'laura.moreno@example.com', 'Carrer de Balmes 789', 64, 1, 'laura789', 'Cliente', CURDATE()),
+('Alexander', 'Kuznetsov', 'alexander.kuznetsov@example.com', 'Ulitsa Lenina 432', 195, 1, 'alexander432', 'Cliente', CURDATE()),
+('Emilie', 'Berger', 'emilie.berger@example.com', 'Rue de Rivoli 567', 73, 1, 'emilie567', 'Cliente', CURDATE()),
+('Viktor', 'Jensen', 'viktor.jensen@example.com', 'Nørre Voldgade 876', 57, 1, 'viktor876', 'Cliente', CURDATE());
+

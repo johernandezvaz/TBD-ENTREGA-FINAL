@@ -1,0 +1,306 @@
+-- Alojamientos en Ciudad de México, México
+INSERT INTO alojamiento (nombre_alojamiento, descripcion, direccion, id_ciudad, id_anfitrion, precio) VALUES
+  ('Lujoso Apartamento en el Centro Histórico', 'Apartamento moderno y lujoso en el corazón de la Ciudad de México, con vista a la catedral.', 'Avenida Reforma #123', 1, 2, 150.00),
+  ('Casa Colonial en Coyoacán', 'Hermosa casa colonial en uno de los barrios más pintorescos de Ciudad de México, cerca de museos y restaurantes.', 'Calle Hidalgo #456', 1, 2, 120.00),
+  ('Penthouse con Vista Panorámica', 'Penthouse de lujo con terraza y vista panorámica de toda la ciudad, ideal para familias o grupos grandes.', 'Paseo de la Reforma #789', 1, 2, 250.00),
+  ('Acogedor Loft en Condesa', 'Loft moderno y acogedor en la trendy colonia Condesa, cerca de bares y parques.', 'Avenida Amsterdam #567', 1, 2, 100.00),
+  ('Suite Ejecutiva Reforma', 'Suite ejecutiva completamente equipada en la principal avenida de Ciudad de México, ideal para viajes de negocios.', 'Paseo de la Reforma #1010', 1, 2, 180.00);
+
+-- Alojamientos en Los Angeles, Estados Unidos
+INSERT INTO alojamiento (nombre_alojamiento, descripcion, direccion, id_ciudad, id_anfitrion, precio) VALUES
+  ('Apartamento Moderno en Hollywood', 'Moderno apartamento en el corazón de Hollywood, cerca de atracciones turísticas y restaurantes.', 'Sunset Blvd #123', 2, 2, 200.00),
+  ('Casa Espaciosa en Beverly Hills', 'Amplia casa con jardín en el exclusivo vecindario de Beverly Hills, ideal para familias.', 'Rodeo Drive #456', 2, 2, 350.00),
+  ('Loft con Vistas en Downtown LA', 'Loft con vistas panorámicas del skyline de Los Angeles, ubicado en el centro histórico.', 'Broadway #789', 2, 2, 180.00),
+  ('Apartamento de Lujo en Santa Monica', 'Apartamento de lujo cerca de la playa de Santa Monica, con acceso a piscina y gimnasio.', 'Ocean Avenue #1010', 2, 2, 300.00),
+  ('Casa Moderna en Venice Beach', 'Casa moderna con diseño vanguardista cerca de las famosas playas de Venice Beach.', 'Abbott Kinney Blvd #567', 2, 2, 250.00);
+
+-- Alojamientos en Toronto, Canadá
+INSERT INTO alojamiento (nombre_alojamiento, descripcion, direccion, id_ciudad, id_anfitrion, precio) VALUES
+  ('Apartamento Céntrico en Toronto', 'Apartamento moderno y céntrico en el corazón de Toronto, cerca de CN Tower y museos.', 'King Street #123', 3, 2, 150.00),
+  ('Casa Histórica en Distillery District', 'Casa histórica restaurada en el pintoresco Distillery District de Toronto, ideal para turistas.', 'Mill Street #456', 3, 2, 120.00),
+  ('Loft de Diseño en Queen West', 'Loft de diseño en la vibrante zona de Queen West, conocida por sus galerías de arte y boutiques.', 'Queen Street West #789', 3, 2, 180.00),
+  ('Piso Ejecutivo en Financial District', 'Piso ejecutivo en el distrito financiero de Toronto, perfecto para estancias de negocios.', 'Bay Street #1010', 3, 2, 200.00),
+  ('Apartamento Familiar en Yorkville', 'Apartamento familiar en el exclusivo barrio de Yorkville, ideal para explorar tiendas de lujo y restaurantes.', 'Bloor Street #567', 3, 2, 250.00);
+
+-- Alojamientos en London, Reino Unido
+INSERT INTO alojamiento (nombre_alojamiento, descripcion, direccion, id_ciudad, id_anfitrion, precio) VALUES
+  ('Apartamento Histórico en Westminster', 'Apartamento histórico cerca de Westminster Abbey y Houses of Parliament, ideal para conocer la historia de Londres.', 'Victoria Street #123', 4, 2, 180.00),
+  ('Casa de Campo en Hampstead Heath', 'Encantadora casa de campo en el tranquilo Hampstead Heath, perfecta para escapadas rurales en Londres.', 'Heath Street #456', 4, 2, 220.00),
+  ('Loft Moderno en Shoreditch', 'Loft moderno en el vibrante barrio de Shoreditch, conocido por sus galerías de arte y vida nocturna.', 'Old Street #789', 4, 2, 160.00),
+  ('Penthouse con Vistas al Támesis', 'Penthouse con vistas panorámicas del río Támesis y la ciudad de Londres, ubicado en Canary Wharf.', 'South Quay #1010', 4, 2, 300.00),
+  ('Apartamento Elegante en Chelsea', 'Apartamento elegante en el exclusivo barrio de Chelsea, cerca de tiendas de diseño y restaurantes de renombre.', 'Sloane Street #567', 4, 2, 250.00);
+
+-- Alojamientos en Paris, Francia
+INSERT INTO alojamiento (nombre_alojamiento, descripcion, direccion, id_ciudad, id_anfitrion, precio) VALUES
+  ('Apartamento Clásico en Le Marais', 'Apartamento clásico en el histórico barrio de Le Marais, ideal para explorar museos y tiendas vintage.', 'Rue Vieille du Temple #123', 5, 2, 200.00),
+  ('Casa con Jardín en Montmartre', 'Encantadora casa con jardín en la bohemia Montmartre, perfecta para disfrutar de vistas panorámicas de París.', 'Rue des Abbesses #456', 5, 2, 280.00),
+  ('Loft Industrial en Canal Saint-Martin', 'Loft de estilo industrial en el moderno Canal Saint-Martin, conocido por sus cafés y boutiques de diseño.', 'Quai de Valmy #789', 5, 2, 150.00),
+  ('Piso Art Nouveau en Montparnasse', 'Piso elegante de estilo Art Nouveau en Montparnasse, ideal para amantes del arte y la arquitectura.', 'Rue Vavin #1010', 5, 2, 220.00),
+  ('Apartamento Chic en Le Marais', 'Apartamento chic y moderno en Le Marais, cerca de galerías de arte contemporáneo y tiendas de moda.', 'Rue de Turenne #567', 5, 2, 180.00);
+
+-- Alojamientos en Berlin, Alemania
+INSERT INTO alojamiento (nombre_alojamiento, descripcion, direccion, id_ciudad, id_anfitrion, precio) VALUES
+  ('Apartamento en Mitte', 'Apartamento moderno y funcional en el vibrante barrio de Mitte, cerca de galerías de arte y cafeterías.', 'Torstrasse #123', 6, 2, 120.00),
+  ('Casa Tradicional en Charlottenburg', 'Casa tradicional en el distinguido barrio de Charlottenburg, ideal para quienes buscan tranquilidad y elegancia.', 'Kurfürstendamm #456', 6, 2, 180.00),
+  ('Loft con Terraza en Friedrichshain', 'Loft con terraza privada en el dinámico Friedrichshain, conocido por su vida nocturna y mercados alternativos.', 'Warschauer Strasse #789', 6, 2, 150.00),
+  ('Penthouse en Prenzlauer Berg', 'Penthouse con vistas panorámicas de Berlín en Prenzlauer Berg, perfecto para escapadas urbanas.', 'Kollwitzplatz #1010', 6, 2, 250.00),
+  ('Apartamento Minimalista en Neukölln', 'Apartamento minimalista en el multicultural barrio de Neukölln, ideal para amantes de la vida bohemia.', 'Karl-Marx-Strasse #567', 6, 2, 100.00);
+
+-- Alojamientos en Madrid, España (continuación)
+INSERT INTO alojamiento (nombre_alojamiento, descripcion, direccion, id_ciudad, id_anfitrion, precio) VALUES
+  ('Piso Moderno en Malasaña', 'Piso moderno en el trendy barrio de Malasaña, ideal para explorar tiendas vintage y bares de moda.', 'Calle Fuencarral #789', 7, 2, 130.00),
+  ('Casa Histórica en Lavapiés', 'Casa histórica restaurada en el multicultural barrio de Lavapiés, perfecta para experiencias auténticas en Madrid.', 'Calle Argumosa #1010', 7, 2, 110.00),
+  ('Loft con Vistas en Chamberí', 'Loft con vistas panorámicas en el elegante barrio de Chamberí, cerca de museos y elegantes boutiques.', 'Calle Santa Engracia #567', 7, 2, 160.00),
+  ('Apartamento Ejecutivo en Salamanca', 'Apartamento ejecutivo en el exclusivo barrio de Salamanca, ideal para estancias de negocios y compras de lujo.', 'Calle Serrano #123', 7, 2, 200.00),
+  ('Apartamento Familiar en Retiro', 'Amplio apartamento familiar cerca del Parque del Retiro, perfecto para actividades al aire libre y paseos.', 'Calle Alcalá #456', 7, 2, 180.00);
+
+-- Alojamientos en Buenos Aires, Argentina
+INSERT INTO alojamiento (nombre_alojamiento, descripcion, direccion, id_ciudad, id_anfitrion, precio) VALUES
+  ('Departamento en Palermo Soho', 'Moderno departamento en el trendy barrio de Palermo Soho, cerca de tiendas de diseño y restaurantes.', 'Calle Thames #123', 8, 2, 150.00),
+  ('Casa Histórica en San Telmo', 'Casa histórica restaurada en el bohemio barrio de San Telmo, ideal para explorar galerías de arte y tango.', 'Calle Defensa #456', 8, 2, 120.00),
+  ('Loft con Terraza en Puerto Madero', 'Loft con terraza privada en el moderno Puerto Madero, cerca de restaurantes y vistas al río.', 'Avenida Alicia Moreau de Justo #789', 8, 2, 180.00),
+  ('Penthouse en Recoleta', 'Penthouse con vistas panorámicas en el distinguido barrio de Recoleta, perfecto para estancias exclusivas.', 'Avenida Alvear #1010', 8, 2, 250.00),
+  ('Apartamento Familiar en Belgrano', 'Amplio apartamento familiar en el residencial barrio de Belgrano, ideal para quienes buscan tranquilidad.', 'Calle Juramento #567', 8, 2, 200.00);
+
+-- Alojamientos en Sydney, Australia
+INSERT INTO alojamiento (nombre_alojamiento, descripcion, direccion, id_ciudad, id_anfitrion, precio) VALUES
+  ('Apartamento con Vistas en Darling Harbour', 'Apartamento con vistas espectaculares del puerto Darling Harbour, cerca de atracciones turísticas.', 'Hickson Road #123', 9, 2, 200.00),
+  ('Casa de Playa en Bondi Beach', 'Encantadora casa de playa en la famosa Bondi Beach, perfecta para surfistas y amantes del sol.', 'Campbell Parade #456', 9, 2, 280.00),
+  ('Loft Moderno en Surry Hills', 'Loft moderno en el animado barrio de Surry Hills, conocido por sus cafés y vida nocturna.', 'Crown Street #789', 9, 2, 150.00),
+  ('Piso Ejecutivo en CBD', 'Piso ejecutivo en el Central Business District (CBD) de Sydney, ideal para viajes de negocios.', 'George Street #1010', 9, 2, 300.00),
+  ('Apartamento Familiar en Manly', 'Amplio apartamento familiar en la pintoresca Manly, ideal para actividades al aire libre y relax.', 'The Corso #567', 9, 2, 250.00);
+
+-- Alojamientos en Rio de Janeiro, Brasil
+INSERT INTO alojamiento (nombre_alojamiento, descripcion, direccion, id_ciudad, id_anfitrion, precio) VALUES
+  ('Apartamento Frente a la Playa en Copacabana', 'Apartamento con vistas panorámicas de la famosa playa de Copacabana, ideal para disfrutar del sol y el mar.', 'Avenida Atlântica #123', 10, 2, 180.00),
+  ('Casa con Jardín en Santa Teresa', 'Casa con jardín en el bohemio barrio de Santa Teresa, perfecta para escapadas culturales y artísticas.', 'Rua Aprazível #456', 10, 2, 220.00),
+  ('Loft Moderno en Ipanema', 'Loft moderno en el chic barrio de Ipanema, cerca de tiendas de moda y restaurantes de lujo.', 'Rua Vinícius de Moraes #789', 10, 2, 160.00),
+  ('Penthouse en Barra da Tijuca', 'Penthouse con vistas panorámicas en la exclusiva Barra da Tijuca, perfecto para estancias de lujo.', 'Avenida das Américas #1010', 10, 2, 300.00),
+  ('Apartamento Estudio en Leblon', 'Apartamento estudio en el sofisticado barrio de Leblon, ideal para quienes buscan tranquilidad y exclusividad.', 'Rua Dias Ferreira #567', 10, 2, 250.00);
+
+-- Alojamientos adicionales
+
+-- Ciudad de México, México
+INSERT INTO alojamiento (nombre_alojamiento, descripcion, direccion, id_ciudad, id_anfitrion, precio) VALUES
+  ('Apartamento Moderno en Polanco', 'Apartamento moderno en el exclusivo barrio de Polanco, cerca de restaurantes y tiendas de diseño.', 'Avenida Presidente Masaryk #123', 1, 2, 180.00),
+  ('Casa Tradicional en Coyoacán', 'Casa tradicional mexicana en el pintoresco barrio de Coyoacán, ideal para explorar arte y cultura.', 'Calle Francisco Sosa #456', 1, 2, 150.00),
+  ('Loft con Terraza en Roma Norte', 'Loft con terraza privada en la vibrante colonia Roma Norte, cerca de cafés y galerías de arte.', 'Calle Mérida #789', 1, 2, 160.00),
+  ('Penthouse en Santa Fe', 'Penthouse de lujo en el moderno distrito financiero de Santa Fe, perfecto para viajes de negocios.', 'Prolongación Paseo de la Reforma #1010', 1, 2, 250.00),
+  ('Apartamento Familiar en Condesa', 'Amplio apartamento familiar en la elegante colonia Condesa, ideal para quienes buscan estilo y confort.', 'Calle Michoacán #567', 1, 2, 200.00);
+
+-- Nueva York, Estados Unidos
+INSERT INTO alojamiento (nombre_alojamiento, descripcion, direccion, id_ciudad, id_anfitrion, precio) VALUES
+  ('Apartamento en Manhattan', 'Acogedor apartamento en el corazón de Manhattan, cerca de teatros de Broadway y atracciones icónicas.', 'Broadway #123', 11, 2, 300.00),
+  ('Loft en Brooklyn', 'Espacioso loft en el creativo barrio de Brooklyn, ideal para explorar galerías de arte y mercados locales.', 'Smith Street #456', 11, 2, 250.00),
+  ('Casa Histórica en Greenwich Village', 'Casa histórica restaurada en el bohemio Greenwich Village, perfecta para quienes buscan una experiencia única.', 'Bleecker Street #789', 11, 2, 280.00),
+  ('Apartamento Ejecutivo en Midtown', 'Apartamento ejecutivo en el vibrante Midtown de Manhattan, ideal para estancias de negocios y placer.', '5th Avenue #1010', 11, 2, 350.00),
+  ('Penthouse en Upper East Side', 'Penthouse con vistas impresionantes en el sofisticado Upper East Side, perfecto para estancias de lujo.', 'Park Avenue #567', 11, 2, 400.00);
+
+-- Alojamientos adicionales
+
+-- Londres, Reino Unido
+INSERT INTO alojamiento (nombre_alojamiento, descripcion, direccion, id_ciudad, id_anfitrion, precio) VALUES
+  ('Apartamento en Covent Garden', 'Apartamento elegante en el animado barrio de Covent Garden, cerca de teatros y tiendas de lujo.', 'Strand #123', 185, 2, 280.00),
+  ('Casa Adosada en Notting Hill', 'Encantadora casa adosada en el pintoresco Notting Hill, ideal para explorar mercados y cafeterías.', 'Portobello Road #456', 185, 2, 320.00),
+  ('Loft Moderno en Shoreditch', 'Loft moderno en el creativo Shoreditch, perfecto para quienes buscan arte urbano y vida nocturna.', 'Old Street #789', 185, 2, 200.00),
+  ('Penthouse en Kensington', 'Penthouse de lujo en el exclusivo Kensington, con vistas panorámicas de la ciudad.', 'Kensington High Street #1010', 185, 2, 450.00),
+  ('Apartamento Familiar en Camden Town', 'Amplio apartamento familiar en el vibrante Camden Town, cerca de mercados y música en vivo.', 'Camden High Street #567', 185, 2, 300.00);
+
+-- París, Francia
+INSERT INTO alojamiento (nombre_alojamiento, descripcion, direccion, id_ciudad, id_anfitrion, precio) VALUES
+  ('Apartamento en Le Marais', 'Acogedor apartamento en el histórico Le Marais, cerca de museos y boutiques de moda.', 'Rue des Archives #123', 71, 2, 250.00),
+  ('Loft con Vistas a la Torre Eiffel', 'Loft espacioso con vistas impresionantes a la Torre Eiffel, ideal para una experiencia parisina única.', 'Quai Branly #456', 71, 2, 380.00),
+  ('Casa Renovada en Montmartre', 'Encantadora casa renovada en el bohemio Montmartre, perfecta para quienes buscan arte y cultura.', 'Rue des Abbesses #789', 71, 2, 300.00),
+  ('Apartamento Chic en Saint-Germain-des-Prés', 'Apartamento chic en el sofisticado Saint-Germain-des-Prés, ideal para estancias elegantes.', 'Rue de Rennes #1010', 71, 2, 350.00),
+  ('Penthouse en Champs-Élysées', 'Penthouse de lujo en la icónica avenida Champs-Élysées, con vistas a los Campos Elíseos.', 'Avenue des Champs-Élysées #567', 71, 2, 500.00);
+
+-- Más alojamientos en ciudades mexicanas
+
+-- Ciudad de México
+INSERT INTO alojamiento (nombre_alojamiento, descripcion, direccion, id_ciudad, id_anfitrion, precio) VALUES
+  ('Apartamento en Polanco', 'Moderno apartamento en la exclusiva zona de Polanco, cerca de restaurantes y tiendas de diseño.', 'Av. Presidente Masaryk #123', 171, 2, 280.00),
+  ('Casa Colonial en Coyoacán', 'Encantadora casa colonial en el histórico barrio de Coyoacán, perfecta para quienes buscan arte y cultura.', 'Calle Francisco Sosa #456', 171, 2, 320.00),
+  ('Loft en Reforma', 'Espacioso loft en la vibrante Avenida Reforma, ideal para explorar museos y vida nocturna.', 'Paseo de la Reforma #789', 171, 2, 200.00),
+  ('Penthouse en Santa Fe', 'Penthouse de lujo en la moderna zona de Santa Fe, con vistas panorámicas de la ciudad.', 'Av. Santa Fe #1010', 171, 2, 450.00),
+  ('Apartamento Familiar en Roma Norte', 'Amplio apartamento familiar en la bohemia colonia Roma Norte, cerca de cafés y galerías de arte.', 'Calle Córdoba #567', 171, 2, 300.00);
+
+-- Guadalajara
+INSERT INTO alojamiento (nombre_alojamiento, descripcion, direccion, id_ciudad, id_anfitrion, precio) VALUES
+  ('Casa con Jardín en Zapopan', 'Acogedora casa con jardín en el tranquilo Zapopan, ideal para familias o grupos.', 'Av. Vallarta #123', 177, 2, 250.00),
+  ('Apartamento en Providencia', 'Apartamento moderno en la zona de Providencia, cerca de restaurantes y centros comerciales.', 'Av. Pablo Neruda #456', 177, 2, 280.00),
+  ('Loft en el Centro Histórico', 'Loft contemporáneo en el animado Centro Histórico, perfecto para quienes buscan arte y arquitectura.', 'Calle Independencia #789', 177, 2, 220.00),
+  ('Penthouse con Vistas en Chapultepec', 'Penthouse con vistas espectaculares en la zona de Chapultepec, ideal para estancias de lujo.', 'Av. Chapultepec #1010', 177, 2, 400.00),
+  ('Apartamento Ejecutivo en Tlaquepaque', 'Apartamento ejecutivo en la tradicional Tlaquepaque, perfecto para viajes de negocios.', 'Av. Revolución #567', 177, 2, 300.00);
+
+-- Más alojamientos en ciudades mexicanas
+
+-- Monterrey
+INSERT INTO alojamiento (nombre_alojamiento, descripcion, direccion, id_ciudad, id_anfitrion, precio) VALUES
+  ('Casa Moderna en San Pedro', 'Casa moderna en la exclusiva zona de San Pedro Garza García, con piscina y jardín.', 'Av. Vasconcelos #123', 175, 2, 350.00),
+  ('Departamento en el Centro', 'Departamento contemporáneo en el corazón del Centro de Monterrey, cerca de puntos de interés turístico.', 'Calle Morelos #456', 175, 2, 240.00),
+  ('Loft Ejecutivo en Valle Oriente', 'Loft ejecutivo en la dinámica zona de Valle Oriente, ideal para estancias cortas o largas.', 'Av. Lázaro Cárdenas #789', 175, 2, 280.00),
+  ('Penthouse con Vista a la Sierra', 'Penthouse con impresionantes vistas a la Sierra Madre, perfecto para relajarse y disfrutar de la naturaleza.', 'Av. Eugenio Garza Sada #1010', 175, 2, 420.00),
+  ('Apartamento Familiar en Contry', 'Amplio apartamento familiar en la tranquila colonia Contry, ideal para vacaciones en familia.', 'Calle Río Amazonas #567', 175, 2, 300.00);
+
+-- Cancún
+INSERT INTO alojamiento (nombre_alojamiento, descripcion, direccion, id_ciudad, id_anfitrion, precio) VALUES
+  ('Villa de Lujo en Zona Hotelera', 'Espectacular villa de lujo en la Zona Hotelera de Cancún, con acceso directo a la playa.', 'Blvd. Kukulcán #123', 172, 2, 600.00),
+  ('Condominio Frente al Mar', 'Condominio frente al mar Caribe, ideal para quienes buscan unas vacaciones relajantes y llenas de confort.', 'Av. Bonampak #456', 172, 2, 450.00),
+  ('Apartamento con Vista a la Laguna Nichupté', 'Apartamento con vistas panorámicas a la laguna Nichupté, perfecto para amantes de la naturaleza.', 'Calle Labná #789', 172, 2, 350.00),
+  ('Casa Colonial en el Centro', 'Encantadora casa colonial en el corazón del Centro de Cancún, cerca de restaurantes y tiendas.', 'Av. Tulum #1010', 172, 2, 320.00),
+  ('Loft Moderno en Punta Cancún', 'Loft moderno en la exclusiva Punta Cancún, ideal para escapadas románticas o vacaciones en pareja.', 'Calle Yaxchilán #567', 172, 2, 280.00);
+
+-- Puebla
+INSERT INTO alojamiento (nombre_alojamiento, descripcion, direccion, id_ciudad, id_anfitrion, precio) VALUES
+  ('Casa Tradicional en el Centro Histórico', 'Casa tradicional en el pintoresco Centro Histórico de Puebla, con patio colonial.', 'Calle 5 de Mayo #123', 176, 2, 260.00),
+  ('Departamento Ejecutivo en Angelópolis', 'Departamento ejecutivo en la moderna zona de Angelópolis, cerca de centros comerciales y restaurantes.', 'Blvd. del Niño Poblano #456', 176, 2, 300.00),
+  ('Loft con Terraza en Cholula', 'Loft con terraza privada en la bohemia Cholula, con vistas a la Pirámide de Cholula.', 'Av. de los Remedios #789', 176, 2, 240.00),
+  ('Penthouse en Lomas de Angelópolis', 'Penthouse de lujo en Lomas de Angelópolis, con amplias áreas verdes y seguridad.', 'Calle Atlixcáyotl #1010', 176, 2, 380.00),
+  ('Apartamento Familiar en La Paz', 'Amplio apartamento familiar en la tranquila La Paz, perfecto para disfrutar de la cultura y gastronomía poblana.', 'Calle Francisco Villa #567', 176, 2, 280.00);
+
+
+-- Alojamientos en Ciudad de México
+INSERT INTO alojamiento (nombre_alojamiento, descripcion, direccion, id_ciudad, id_anfitrion, precio) VALUES
+  ('Apartamento Moderno en el Centro Histórico', 'Apartamento completamente equipado en el corazón del Centro Histórico de la Ciudad de México.', 'Calle Principal #123', 1, 2, 1500.00),
+  ('Casa Colonial en Coyoacán', 'Hermosa casa colonial en el barrio de Coyoacán, cerca de museos y cafés.', 'Calle Coyoacán #456', 1, 2, 1800.00),
+  ('Hotel Boutique en Polanco', 'Hotel boutique de lujo en la exclusiva zona de Polanco, ideal para viajeros exigentes.', 'Av. Presidente Masaryk #789', 1, 2, 2500.00),
+  ('Hostal en la Zona Rosa', 'Hostal con ambiente juvenil en la animada Zona Rosa, perfecto para quienes buscan vida nocturna.', 'Calle Zona Rosa #1010', 1, 2, 500.00),
+  ('Departamento con Vista al Ángel de la Independencia', 'Amplio departamento con vistas panorámicas al Ángel de la Independencia, ubicación privilegiada.', 'Av. Reforma #1111', 1, 2, 2000.00);
+
+-- Alojamientos en Guadalajara
+INSERT INTO alojamiento (nombre_alojamiento, descripcion, direccion, id_ciudad, id_anfitrion, precio) VALUES
+  ('Casa Tradicional en Tlaquepaque', 'Casa tradicional en el encantador pueblo de Tlaquepaque, famoso por su artesanía.', 'Calle Tlaquepaque #123', 2, 2, 1200.00),
+  ('Hotel en el Centro Histórico', 'Hotel cómodo en el centro histórico de Guadalajara, cerca de la Catedral y los principales puntos de interés.', 'Av. Juárez #456', 2, 2, 1500.00),
+  ('Departamento Moderno en Zapopan', 'Moderno departamento en la zona residencial de Zapopan, ideal para estancias largas.', 'Calle Zapopan #789', 2, 2, 1800.00),
+  ('Hostal Boutique en Chapultepec', 'Hostal boutique con diseño contemporáneo en la vibrante zona de Chapultepec.', 'Av. Chapultepec #1010', 2, 2, 600.00),
+  ('Casa de Huéspedes en Tonalá', 'Acogedora casa de huéspedes en Tonalá, ideal para quienes buscan autenticidad y tranquilidad.', 'Calle Tonalá #1111', 2, 2, 800.00);
+
+-- Alojamientos en Monterrey
+INSERT INTO alojamiento (nombre_alojamiento, descripcion, direccion, id_ciudad, id_anfitrion, precio) VALUES
+  ('Loft Moderno en el Barrio Antiguo', 'Loft moderno en el trendy Barrio Antiguo de Monterrey, cerca de bares y galerías de arte.', 'Calle Barrio Antiguo #123', 3, 2, 1000.00),
+  ('Hotel Ejecutivo en San Pedro Garza García', 'Hotel ejecutivo en la exclusiva zona de San Pedro Garza García, ideal para viajeros de negocios.', 'Av. San Pedro #456', 3, 2, 2000.00),
+  ('Departamento con Vista a la Sierra Madre', 'Amplio departamento con vistas a la Sierra Madre en Monterrey, perfecto para quienes aman la naturaleza.', 'Av. Sierra Madre #789', 3, 2, 1500.00),
+  ('Hostal en el Centro de Monterrey', 'Hostal con ambiente internacional en el centro de Monterrey, ideal para mochileros y jóvenes viajeros.', 'Calle Centro #1010', 3, 2, 400.00),
+  ('Casa de Huéspedes en Fundidora', 'Casa de huéspedes cerca del Parque Fundidora, ideal para familias y grupos pequeños.', 'Calle Fundidora #1111', 3, 2, 800.00);
+
+-- Alojamientos en Puebla
+INSERT INTO alojamiento (nombre_alojamiento, descripcion, direccion, id_ciudad, id_anfitrion, precio) VALUES
+  ('Casa Colonial en el Centro Histórico', 'Casa colonial restaurada en el centro histórico de Puebla, cerca de la Catedral y museos.', 'Calle Principal #123', 4, 2, 900.00),
+  ('Hotel Boutique en Cholula', 'Hotel boutique con encanto en Cholula, ideal para quienes desean explorar la zona arqueológica y la pirámide.', 'Av. Cholula #456', 4, 2, 1200.00),
+  ('Departamento Moderno en Angelópolis', 'Departamento moderno en la zona residencial de Angelópolis, perfecto para estancias largas.', 'Calle Angelópolis #789', 4, 2, 1500.00),
+  ('Hostal en la Zona de los Fuertes', 'Hostal con ambiente joven y dinámico en la zona de los Fuertes de Puebla, cerca de atracciones históricas.', 'Calle Fuertes #1010', 4, 2, 300.00),
+  ('Casa de Huéspedes en Atlixco', 'Acogedora casa de huéspedes en Atlixco, ideal para quienes buscan tranquilidad y contacto con la naturaleza.', 'Calle Atlixco #1111', 4, 2, 600.00);
+
+-- Alojamientos en Tijuana
+INSERT INTO alojamiento (nombre_alojamiento, descripcion, direccion, id_ciudad, id_anfitrion, precio) VALUES
+  ('Apartamento en la Zona Río', 'Amplio apartamento en la zona Río de Tijuana, cerca de restaurantes y centros comerciales.', 'Av. Río Tijuana #123', 5, 2, 800.00),
+  ('Casa con Vista al Mar en Playas de Tijuana', 'Casa con vistas espectaculares al mar en Playas de Tijuana, perfecta para vacaciones familiares.', 'Calle Playas #456', 5, 2, 1500.00),
+  ('Hotel Boutique en el Centro', 'Hotel boutique con diseño contemporáneo en el centro de Tijuana, ideal para viajeros que buscan comodidad.', 'Calle Centro #789', 5, 2, 1200.00),
+  ('Hostal en Zona Turística', 'Hostal económico en la zona turística de Tijuana, ideal para mochileros y viajeros con presupuesto limitado.', 'Calle Turística #1010', 5, 2, 300.00),
+  ('Casa de Huéspedes en Otay', 'Casa de huéspedes en la tranquila zona de Otay, perfecta para quienes viajan por negocios o placer.', 'Calle Otay #1111', 5, 2, 500.00);
+
+-- Alojamientos en León
+INSERT INTO alojamiento (nombre_alojamiento, descripcion, direccion, id_ciudad, id_anfitrion, precio) VALUES
+  ('Casa Moderna en León', 'Casa moderna con jardín en la ciudad de León, ideal para familias y grupos pequeños.', 'Av. Principal #123', 6, 2, 700.00),
+  ('Hotel en el Centro Histórico', 'Hotel cómodo en el centro histórico de León, cerca de la Plaza Principal y tiendas de artesanías.', 'Calle Centro #456', 6, 2, 1000.00),
+  ('Departamento Ejecutivo en Zona Dorada', 'Departamento ejecutivo en la exclusiva Zona Dorada de León, ideal para estancias de negocios.', 'Calle Zona Dorada #789', 6, 2, 1200.00),
+  ('Hostal en Plaza Mayor', 'Hostal con ambiente juvenil en la zona comercial de Plaza Mayor, perfecto para quienes buscan diversión y compras.', 'Av. Plaza Mayor #1010', 6, 2, 400.00),
+  ('Casa de Huéspedes en León Moderno', 'Acogedora casa de huéspedes en la zona residencial de León Moderno, ideal para estancias prolongadas.', 'Calle León Moderno #1111', 6, 2, 600.00);
+
+-- Alojamientos en Juárez
+INSERT INTO alojamiento (nombre_alojamiento, descripcion, direccion, id_ciudad, id_anfitrion, precio) VALUES
+  ('Apartamento con Vista a la Ciudad', 'Amplio apartamento con vistas panorámicas a la ciudad en Juárez, ideal para estancias cortas y largas.', 'Av. Principal #123', 7, 2, 800.00),
+  ('Casa Colonial en el Centro', 'Casa colonial restaurada en el centro histórico de Juárez, cerca de museos y sitios de interés cultural.', 'Calle Centro #456', 7, 2, 1200.00),
+  ('Hotel de Lujo en Zona Río', 'Hotel de lujo en la exclusiva Zona Río de Juárez, perfecto para quienes buscan confort y exclusividad.', 'Av. Zona Río #789', 7, 2, 2000.00),
+  ('Hostal Económico en la Zona Turística', 'Hostal económico en la animada zona turística de Juárez, ideal para mochileros y jóvenes viajeros.', 'Calle Turística #1010', 7, 2, 300.00),
+  ('Casa de Huéspedes en Colonia Moderna', 'Casa de huéspedes acogedora en la moderna Colonia de Juárez, perfecta para estancias prolongadas.', 'Calle Colonia Moderna #1111', 7, 2, 600.00);
+
+-- Alojamientos en Mérida
+INSERT INTO alojamiento (nombre_alojamiento, descripcion, direccion, id_ciudad, id_anfitrion, precio) VALUES
+  ('Casa Colonial en el Centro Histórico', 'Casa colonial restaurada en el encantador centro histórico de Mérida, cerca de plazas y restaurantes.', 'Calle Principal #123', 8, 2, 900.00),
+  ('Hotel Boutique en Paseo Montejo', 'Hotel boutique de lujo en la emblemática avenida Paseo de Montejo de Mérida, ideal para viajeros sofisticados.', 'Av. Paseo de Montejo #456', 8, 2, 1500.00),
+  ('Departamento Moderno en Altabrisa', 'Departamento moderno en la zona residencial de Altabrisa, perfecto para estancias largas.', 'Calle Altabrisa #789', 8, 2, 1200.00),
+  ('Hostal en el Centro Cultural', 'Hostal con ambiente cultural en el centro de Mérida, ideal para quienes buscan explorar la historia y el arte local.', 'Calle Centro Cultural #1010', 8, 2, 400.00),
+  ('Casa de Huéspedes en Santiago', 'Casa de huéspedes en el tradicional barrio de Santiago en Mérida, perfecta para una experiencia auténtica.', 'Calle Santiago #1111', 8, 2, 700.00);
+
+-- Alojamientos en San Luis Potosí
+INSERT INTO alojamiento (nombre_alojamiento, descripcion, direccion, id_ciudad, id_anfitrion, precio) VALUES
+  ('Loft Moderno en el Centro Histórico', 'Loft moderno en el vibrante centro histórico de San Luis Potosí, cerca de plazas y monumentos.', 'Av. Principal #123', 9, 2, 700.00),
+  ('Hotel en Zona Universitaria', 'Hotel cómodo en la zona universitaria de San Luis Potosí, ideal para viajeros académicos y de negocios.', 'Calle Zona Universitaria #456', 9, 2, 1000.00),
+  ('Departamento Ejecutivo en Lomas', 'Departamento ejecutivo en la exclusiva zona de Lomas de San Luis Potosí, perfecto para estancias largas.', 'Av. Lomas #789', 9, 2, 1200.00),
+  ('Hostal en el Barrio de Tequis', 'Hostal con ambiente bohemio en el pintoresco barrio de Tequisquiapan en San Luis Potosí, ideal para mochileros.', 'Calle Tequis #1010', 9, 2, 400.00),
+  ('Casa de Huéspedes en Tangamanga', 'Casa de huéspedes en la zona natural de Tangamanga en San Luis Potosí, perfecta para quienes aman la naturaleza.', 'Calle Tangamanga #1111', 9, 2, 600.00);
+
+-- Alojamientos en Aguascalientes
+INSERT INTO alojamiento (nombre_alojamiento, descripcion, direccion, id_ciudad, id_anfitrion, precio) VALUES
+  ('Casa Colonial en el Centro Histórico', 'Casa colonial restaurada en el encantador centro histórico de Aguascalientes, cerca de plazas y museos.', 'Calle Principal #123', 10, 2, 800.00),
+  ('Hotel Boutique en la Zona Dorada', 'Hotel boutique de lujo en la exclusiva Zona Dorada de Aguascalientes, ideal para viajeros sofisticados.', 'Av. Zona Dorada #456', 10, 2, 1500.00),
+  ('Departamento Moderno en Villa Teresa', 'Departamento moderno en la zona residencial de Villa Teresa en Aguascalientes, perfecto para estancias largas.', 'Calle Villa Teresa #789', 10, 2, 1200.00),
+  ('Hostal en el Barrio de San Marcos', 'Hostal con ambiente juvenil en el tradicional barrio de San Marcos en Aguascalientes, ideal para mochileros.', 'Calle San Marcos #1010', 10, 2, 400.00),
+  ('Casa de Huéspedes en la Colonia España', 'Casa de huéspedes en la tranquila Colonia España de Aguascalientes, perfecta para una estancia relajante.', 'Calle Colonia España #1111', 10, 2, 600.00);
+
+-- Alojamientos en Hermosillo
+INSERT INTO alojamiento (nombre_alojamiento, descripcion, direccion, id_ciudad, id_anfitrion, precio) VALUES
+  ('Loft Moderno en el Centro Histórico', 'Loft moderno en el vibrante centro histórico de Hermosillo, cerca de plazas y monumentos.', 'Av. Principal #123', 11, 2, 700.00),
+  ('Hotel en Zona Comercial', 'Hotel cómodo en la zona comercial de Hermosillo, ideal para viajeros de negocios y placer.', 'Calle Zona Comercial #456', 11, 2, 1000.00),
+  ('Departamento Ejecutivo en Las Lomas', 'Departamento ejecutivo en la exclusiva zona de Las Lomas en Hermosillo, perfecto para estancias largas.', 'Av. Las Lomas #789', 11, 2, 1200.00),
+  ('Hostal en el Barrio de la Villa', 'Hostal con ambiente juvenil en el pintoresco barrio de la Villa en Hermosillo, ideal para mochileros.', 'Calle Villa #1010', 11, 2, 400.00),
+  ('Casa de Huéspedes en la Colonia Centro', 'Casa de huéspedes en la tranquila Colonia Centro de Hermosillo, perfecta para una estancia relajante.', 'Calle Colonia Centro #1111', 11, 2, 600.00);
+
+-- Alojamientos en Saltillo
+INSERT INTO alojamiento (nombre_alojamiento, descripcion, direccion, id_ciudad, id_anfitrion, precio) VALUES
+  ('Casa Colonial en el Centro Histórico', 'Casa colonial restaurada en el encantador centro histórico de Saltillo, cerca de plazas y museos.', 'Calle Principal #123', 12, 2, 800.00),
+  ('Hotel Boutique en la Zona Norte', 'Hotel boutique de lujo en la exclusiva Zona Norte de Saltillo, ideal para viajeros sofisticados.', 'Av. Zona Norte #456', 12, 2, 1500.00),
+  ('Departamento Moderno en Villa Bonita', 'Departamento moderno en la zona residencial de Villa Bonita en Saltillo, perfecto para estancias largas.', 'Calle Villa Bonita #789', 12, 2, 1200.00),
+  ('Hostal en el Barrio de San Isidro', 'Hostal con ambiente juvenil en el tradicional barrio de San Isidro en Saltillo, ideal para mochileros.', 'Calle San Isidro #1010', 12, 2, 400.00);
+
+-- Alojamientos en Saltillo (continuación)
+INSERT INTO alojamiento (nombre_alojamiento, descripcion, direccion, id_ciudad, id_anfitrion, precio) VALUES
+  ('Casa de Huéspedes en la Colonia Satélite', 'Casa de huéspedes en la tranquila Colonia Satélite de Saltillo, perfecta para una estancia relajante.', 'Calle Colonia Satélite #1111', 12, 2, 600.00);
+
+-- Alojamientos en Mexicali
+INSERT INTO alojamiento (nombre_alojamiento, descripcion, direccion, id_ciudad, id_anfitrion, precio) VALUES
+  ('Loft Moderno en el Centro Histórico', 'Loft moderno en el vibrante centro histórico de Mexicali, cerca de plazas y monumentos.', 'Av. Principal #123', 14, 2, 700.00),
+  ('Hotel en Zona Comercial', 'Hotel cómodo en la zona comercial de Mexicali, ideal para viajeros de negocios y placer.', 'Calle Zona Comercial #456', 14, 2, 1000.00),
+  ('Departamento Ejecutivo en Las Lomas', 'Departamento ejecutivo en la exclusiva zona de Las Lomas en Mexicali, perfecto para estancias largas.', 'Av. Las Lomas #789', 14, 2, 1200.00),
+  ('Hostal en el Barrio de la Villa', 'Hostal con ambiente juvenil en el pintoresco barrio de la Villa en Mexicali, ideal para mochileros.', 'Calle Villa #1010', 14, 2, 400.00),
+  ('Casa de Huéspedes en la Colonia Centro', 'Casa de huéspedes en la tranquila Colonia Centro de Mexicali, perfecta para una estancia relajante.', 'Calle Colonia Centro #1111', 14, 2, 600.00);
+
+-- Alojamientos en Culiacán
+INSERT INTO alojamiento (nombre_alojamiento, descripcion, direccion, id_ciudad, id_anfitrion, precio) VALUES
+  ('Casa Colonial en el Centro Histórico', 'Casa colonial restaurada en el encantador centro histórico de Culiacán, cerca de plazas y museos.', 'Calle Principal #123', 15, 2, 800.00),
+  ('Hotel Boutique en la Zona Dorada', 'Hotel boutique de lujo en la exclusiva Zona Dorada de Culiacán, ideal para viajeros sofisticados.', 'Av. Zona Dorada #456', 15, 2, 1500.00),
+  ('Departamento Moderno en Villa Teresa', 'Departamento moderno en la zona residencial de Villa Teresa en Culiacán, perfecto para estancias largas.', 'Calle Villa Teresa #789', 15, 2, 1200.00),
+  ('Hostal en el Barrio de San Isidro', 'Hostal con ambiente juvenil en el tradicional barrio de San Isidro en Culiacán, ideal para mochileros.', 'Calle San Isidro #1010', 15, 2, 400.00),
+  ('Casa de Huéspedes en la Colonia España', 'Casa de huéspedes en la tranquila Colonia España de Culiacán, perfecta para una estancia relajante.', 'Calle Colonia España #1111', 15, 2, 600.00);
+
+-- Alojamientos en Chihuahua
+INSERT INTO alojamiento (nombre_alojamiento, descripcion, direccion, id_ciudad, id_anfitrion, precio) VALUES
+  ('Loft Moderno en el Centro Histórico', 'Loft moderno en el vibrante centro histórico de Chihuahua, cerca de plazas y monumentos.', 'Av. Principal #123', 16, 2, 700.00),
+  ('Hotel en Zona Comercial', 'Hotel cómodo en la zona comercial de Chihuahua, ideal para viajeros de negocios y placer.', 'Calle Zona Comercial #456', 16, 2, 1000.00),
+  ('Departamento Ejecutivo en Las Lomas', 'Departamento ejecutivo en la exclusiva zona de Las Lomas en Chihuahua, perfecto para estancias largas.', 'Av. Las Lomas #789', 16, 2, 1200.00),
+  ('Hostal en el Barrio de la Villa', 'Hostal con ambiente juvenil en el pintoresco barrio de la Villa en Chihuahua, ideal para mochileros.', 'Calle Villa #1010', 16, 2, 400.00),
+  ('Casa de Huéspedes en la Colonia Centro', 'Casa de huéspedes en la tranquila Colonia Centro de Chihuahua, perfecta para una estancia relajante.', 'Calle Colonia Centro #1111', 16, 2, 600.00);
+
+-- Alojamientos en Durango
+INSERT INTO alojamiento (nombre_alojamiento, descripcion, direccion, id_ciudad, id_anfitrion, precio) VALUES
+  ('Casa Colonial en el Centro Histórico', 'Casa colonial restaurada en el encantador centro histórico de Durango, cerca de plazas y museos.', 'Calle Principal #123', 17, 2, 800.00),
+  ('Hotel Boutique en la Zona Dorada', 'Hotel boutique de lujo en la exclusiva Zona Dorada de Durango, ideal para viajeros sofisticados.', 'Av. Zona Dorada #456', 17, 2, 1500.00),
+  ('Departamento Moderno en Villa Teresa', 'Departamento moderno en la zona residencial de Villa Teresa en Durango, perfecto para estancias largas.', 'Calle Villa Teresa #789', 17, 2, 1200.00),
+  ('Hostal en el Barrio de San Isidro', 'Hostal con ambiente juvenil en el tradicional barrio de San Isidro en Durango, ideal para mochileros.', 'Calle San Isidro #1010', 17, 2, 400.00),
+  ('Casa de Huéspedes en la Colonia España', 'Casa de huéspedes en la tranquila Colonia España de Durango, perfecta para una estancia relajante.', 'Calle Colonia España #1111', 17, 2, 600.00);
+
+-- Alojamientos en Toluca
+INSERT INTO alojamiento (nombre_alojamiento, descripcion, direccion, id_ciudad, id_anfitrion, precio) VALUES
+  ('Loft Moderno en el Centro Histórico', 'Loft moderno en el vibrante centro histórico de Toluca, cerca de plazas y monumentos.', 'Av. Principal #123', 18, 2, 700.00),
+  ('Hotel en Zona Comercial', 'Hotel cómodo en la zona comercial de Toluca, ideal para viajeros de negocios y placer.', 'Calle Zona Comercial #456', 18, 2, 1000.00),
+  ('Departamento Ejecutivo en Las Lomas', 'Departamento ejecutivo en la exclusiva zona de Las Lomas en Toluca, perfecto para estancias largas.', 'Av. Las Lomas #789', 18, 2, 1200.00),
+  ('Hostal en el Barrio de la Villa', 'Hostal con ambiente juvenil en el pintoresco barrio de la Villa en Toluca, ideal para mochileros.', 'Calle Villa #1010', 18, 2, 400.00),
+  ('Casa de Huéspedes en la Colonia Centro', 'Casa de huéspedes en la tranquila Colonia Centro de Toluca, perfecta para una estancia relajante.', 'Calle Colonia Centro #1111', 18, 2, 600.00);
+
+-- Alojamientos en Querétaro
+INSERT INTO alojamiento (nombre_alojamiento, descripcion, direccion, id_ciudad, id_anfitrion, precio) VALUES
+  ('Casa Colonial en el Centro Histórico', 'Casa colonial restaurada en el encantador centro histórico de Querétaro, cerca de plazas y museos.', 'Calle Principal #123', 19, 2, 800.00),
+  ('Hotel Boutique en la Zona Dorada', 'Hotel boutique de lujo en la exclusiva Zona Dorada de Querétaro, ideal para viajeros sofisticados.', 'Av. Zona Dorada #456', 19, 2, 1500.00);
+
+
