@@ -1,0 +1,93 @@
+Funciones
+-------------------------------------------------
+Función para validar las contraseñas
+DELIMITER //
+
+CREATE FUNCTION ValidarContrasena(
+    p_id_usuario INT,
+    p_contrasena VARCHAR(100)
+)
+RETURNS BOOLEAN
+BEGIN
+    DECLARE v_contrasena_usuario VARCHAR(100);
+    DECLARE v_validacion BOOLEAN;
+
+    -- Obtener la contraseña del usuario
+    SELECT contrasena INTO v_contrasena_usuario
+    FROM usuario
+    WHERE id_usuario = p_id_usuario;
+
+    -- Comparar contraseñas
+    IF v_contrasena_usuario = p_contrasena THEN
+        SET v_validacion = TRUE;
+    ELSE
+        SET v_validacion = FALSE;
+    END IF;
+
+    RETURN v_validacion;
+END//
+
+DELIMITER ;
+------------------------------------------------
+Calcular días de una estancia
+DELIMITER //
+
+CREATE FUNCTION CalcularDiasEstancia(
+    p_fecha_inicio DATE,
+    p_fecha_fin DATE
+)
+RETURNS INT
+BEGIN
+    DECLARE dias_estancia INT;
+
+    SET dias_estancia = DATEDIFF(p_fecha_fin, p_fecha_inicio) + 1;
+
+    RETURN dias_estancia;
+END//
+
+DELIMITER ;
+----------------------------------------------
+Buscar alojamientos por criterio
+DELIMITER //
+
+CREATE FUNCTION BuscarAlojamientos(
+    p_pais VARCHAR(100),
+    p_ciudad VARCHAR(100),
+    p_precio_max DECIMAL(10,2)
+)
+RETURNS INT
+DETERMINISTIC
+BEGIN
+    DECLARE total_alojamientos INT;
+
+    SELECT COUNT(*) INTO total_alojamientos
+    FROM alojamiento a
+    JOIN ciudad c ON a.id_ciudad = c.id_ciudad
+    JOIN pais p ON c.id_pais = p.id_pais
+    WHERE p.nombre_pais = p_pais
+    AND c.nombre_ciudad = p_ciudad
+    AND a.precio <= p_precio_max;
+
+    RETURN total_alojamientos;
+END//
+
+DELIMITER ;
+-------------------------------------------
+Crear código de confirmación
+
+DELIMITER //
+
+CREATE FUNCTION GenerarCodigoConfirmacion()
+RETURNS VARCHAR(10)
+DETERMINISTIC
+BEGIN
+    DECLARE codigo_confirmacion VARCHAR(10);
+
+    SET codigo_confirmacion = CONCAT('RES-', LPAD(FLOOR(RAND() * 100000), 5, '0'));
+
+    RETURN codigo_confirmacion;
+END//
+
+DELIMITER ;
+
+

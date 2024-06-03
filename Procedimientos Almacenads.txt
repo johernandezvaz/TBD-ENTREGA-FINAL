@@ -1,0 +1,169 @@
+--------------------------------------------------
+Realizar Reserva
+DELIMITER //
+
+CREATE PROCEDURE RealizarReserva(
+    IN p_fecha_inicio DATE,
+    IN p_fecha_fin DATE,
+    IN p_id_usuario INT,
+    IN p_id_alojamiento INT,
+    IN p_metodo_pago ENUM('tarjeta_credito','tarjeta_debito'),
+    IN p_monto DECIMAL(10,2)
+)
+BEGIN
+    -- Verificar disponibilidad del alojamiento
+    IF EXISTS (
+        SELECT 1
+        FROM calendario_disponibilidad_propiedad
+        WHERE id_alojamiento = p_id_alojamiento
+        AND fecha BETWEEN p_fecha_inicio AND p_fecha_fin
+        AND disponible = 0
+    ) THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'El alojamiento no está disponible en las fechas especificadas.';
+    END IF;
+
+    -- Insertar reserva
+    INSERT INTO reserva (fecha_inicio, fecha_fin, id_huesped, id_alojamiento)
+    VALUES (p_fecha_inicio, p_fecha_fin, p_id_usuario, p_id_alojamiento);
+
+    -- Realizar transacción de pago
+    INSERT INTO transacciones (id_reserva, metodo_pago, monto)
+    VALUES (LAST_INSERT_ID(), p_metodo_pago, p_monto);
+
+    -- Actualizar disponibilidad del alojamiento
+    UPDATE calendario_disponibilidad_propiedad
+    SET disponible = 0
+    WHERE id_alojamiento = p_id_alojamiento
+    AND fecha BETWEEN p_fecha_inicio AND p_fecha_fin;
+    
+    -- Otros pasos necesarios como enviar confirmación por correo electrónico, etc.
+END//
+
+DELIMITER ;
+-------------------------------------------------------------------------------------
+Cancelar Reserva
+DELIMITER //
+
+CREATE PROCEDURE CancelarReserva(
+    IN p_id_reserva INT
+)
+BEGIN
+    DECLARE v_id_alojamiento INT;
+    DECLARE v_fecha_inicio DATE;
+    DECLARE v_fecha_fin DATE;
+
+    -- Obtener información de la reserva
+    SELECT id_alojamiento, fecha_inicio, fecha_fin
+    INTO v_id_alojamiento, v_fecha_inicio, v_fecha_fin
+    FROM reserva
+    WHERE id_reserva = p_id_reserva;
+
+    -- Actualizar disponibilidad del alojamiento
+    UPDATE calendario_disponibilidad_propiedad
+    SET disponible = 1
+    WHERE id_alojamiento = v_id_alojamiento
+    AND fecha BETWEEN v_fecha_inicio AND v_fecha_fin;
+
+    -- Eliminar la reserva
+    DELETE FROM reserva
+    WHERE id_reserva = p_id_reserva;
+
+    -- Eliminar la transacción asociada
+    DELETE FROM transacciones
+    WHERE id_reserva = p_id_reserva;
+
+END//
+
+DELIMITER ;
+
+--------------------------------------------------------------------------------------
+Gestionar Usuarios
+DELIMITER //
+
+CREATE PROCEDURE GestionarUsuario(
+    IN p_operacion VARCHAR(10), -- Puede ser 'crear', 'actualizar', o 'eliminar'
+    IN p_id_usuario INT,
+    IN p_nombre VARCHAR(100),
+    IN p_apellido VARCHAR(100),
+    IN p_correo_electronico VARCHAR(255),
+    IN p_direccion VARCHAR(255),
+    IN p_id_pais INT,
+    IN p_id_ciudad INT,
+    IN p_contrasena VARCHAR(100),
+    IN p_tipo_usuario ENUM('Cliente', 'Arrendatario')
+)
+BEGIN
+    IF p_operacion = 'crear' THEN
+        INSERT INTO usuario (nombre, apellido, correo_electronico, direccion, id_pais, id_ciudad, contrasena, tipo_usuario)
+        VALUES (p_nombre, p_apellido, p_correo_electronico, p_direccion, p_id_pais, p_id_ciudad, p_contrasena, p_tipo_usuario);
+    ELSEIF p_operacion = 'actualizar' THEN
+        UPDATE usuario
+        SET nombre = p_nombre, apellido = p_apellido, correo_electronico = p_correo_electronico,
+            direccion = p_direccion, id_pais = p_id_pais, id_ciudad = p_id_ciudad, contrasena = p_contrasena,
+            tipo_usuario = p_tipo_usuario
+        WHERE id_usuario = p_id_usuario;
+    ELSEIF p_operacion = 'eliminar' THEN
+        DELETE FROM usuario
+        WHERE id_usuario = p_id_usuario;
+    ELSE
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Operación no válida. Debe ser "crear", "actualizar" o "eliminar".';
+    END IF;
+END//
+
+DELIMITER ;
+----------------------------------------------------------------------------
+Precio de reserva
+DELIMITER //
+
+CREATE PROCEDURE CalcularPrecioReserva(
+    IN p_fecha_inicio DATE,
+    IN p_fecha_fin DATE,
+    IN p_precio_por_noche DECIMAL(10,2),
+    OUT p_precio_total DECIMAL(10,2)
+)
+BEGIN
+    DECLARE p_duracion INT;
+    
+    SET p_duracion = DATEDIFF(p_fecha_fin, p_fecha_inicio);
+    
+    IF p_duracion <= 0 THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'La fecha de fin debe ser posterior a la fecha de inicio.';
+    ELSE
+        SET p_precio_total = p_duracion * p_precio_por_noche;
+    END IF;
+END//
+
+DELIMITER ;
+------------------------------------------------------------------------------------
+Estadísticas de la reserva (únicamente para arrendatarios)
+DELIMITER //
+
+CREATE PROCEDURE GenerarEstadisticasReservas(
+    IN p_fecha_inicio DATE,
+    IN p_fecha_fin DATE,
+    OUT p_numero_total_reservas INT,
+    OUT p_ingresos_generados DECIMAL(10,2),
+    OUT p_promedio_duracion_estancia FLOAT
+)
+BEGIN
+    -- Obtener el número total de reservas
+    SELECT COUNT(*) INTO p_numero_total_reservas
+    FROM reserva
+    WHERE fecha_inicio BETWEEN p_fecha_inicio AND p_fecha_fin;
+
+    -- Calcular los ingresos generados durante el período
+    SELECT SUM(monto) INTO p_ingresos_generados
+    FROM transacciones
+    INNER JOIN reserva ON transacciones.id_reserva = reserva.id_reserva
+    WHERE reserva.fecha_inicio BETWEEN p_fecha_inicio AND p_fecha_fin;
+
+    -- Calcular el promedio de duración de la estancia
+    SELECT AVG(DATEDIFF(fecha_fin, fecha_inicio)) INTO p_promedio_duracion_estancia
+    FROM reserva
+    WHERE fecha_inicio BETWEEN p_fecha_inicio AND p_fecha_fin;
+END//
+
+DELIMITER ;

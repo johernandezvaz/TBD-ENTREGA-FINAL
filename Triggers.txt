@@ -1,0 +1,60 @@
+Triggers
+------------------------------------
+Actualizar la disponibilidad
+DELIMITER //
+
+CREATE TRIGGER ActualizarDisponibilidadAlojamiento AFTER INSERT ON reserva
+FOR EACH ROW
+BEGIN
+    UPDATE calendario_disponibilidad_propiedad
+    SET disponible = 0
+    WHERE id_alojamiento = NEW.id_alojamiento
+    AND fecha BETWEEN NEW.fecha_inicio AND NEW.fecha_fin;
+END//
+
+DELIMITER ;
+------------------------------------------------
+Notificar si hay una reserva nueva (únicamente para arrendatarios)
+DELIMITER //
+
+CREATE TRIGGER NotificarArrendatarioReserva AFTER INSERT ON reserva
+FOR EACH ROW
+BEGIN
+    DECLARE v_nombre_arrendatario VARCHAR(100);
+    
+    -- Obtener el nombre del arrendatario
+    SELECT nombre INTO v_nombre_arrendatario
+    FROM usuario
+    WHERE id_usuario = (SELECT id_anfitrion FROM alojamiento WHERE id_alojamiento = NEW.id_alojamiento);
+
+    -- Enviar notificación al arrendatario (código simulado)
+    INSERT INTO notificaciones (mensaje, destinatario)
+    VALUES (CONCAT('Se ha realizado una reserva en su alojamiento por el cliente ', NEW.id_huesped, '.'), v_nombre_arrendatario);
+END//
+
+DELIMITER ;
+-----------------------------------------------------------------------------------------
+Actualizar el número de favoritos
+DELIMITER //
+
+CREATE TRIGGER ActualizarNumeroFavoritos AFTER INSERT ON favoritos
+FOR EACH ROW
+BEGIN
+    UPDATE alojamiento
+    SET numero_favoritos = (SELECT COUNT(*) FROM favoritos WHERE id_alojamiento = NEW.id_alojamiento)
+    WHERE id_alojamiento = NEW.id_alojamiento;
+END//
+
+DELIMITER ;
+------------------------------------------------------------------------
+Registrar Reserva de un usuario
+DELIMITER //
+
+CREATE TRIGGER RegistrarAccionUsuario AFTER INSERT ON reserva
+FOR EACH ROW
+BEGIN
+    INSERT INTO registros_auditoria (accion, usuario_id, fecha)
+    VALUES ('Nueva reserva creada', NEW.id_usuario, NOW());
+END//
+
+DELIMITER ;
