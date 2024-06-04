@@ -1,4 +1,3 @@
-import random
 import MySQLdb
 from flask import Flask, request, jsonify, session, redirect
 from flask_mysqldb import MySQL
@@ -10,7 +9,7 @@ from config import Config
 from requests import Session
 
 app = Flask(__name__)
-CORS(app, supports_credentials=True, origins=["http://localhost:5173"])
+CORS(app, supports_credentials=True, origins="http://localhost:5173")
 app.config.from_object(Config)
 app.secret_key = 'supersecretkey'  # Necesario para usar sesiones
 app.config['SESSION_TYPE'] = 'filesystem'
@@ -415,26 +414,39 @@ if __name__ == '__main__':
 @app.route('/confirmar-reserva', methods=['POST', 'OPTIONS'])
 def confirmar_reserva():
     if request.method == 'OPTIONS':
-        return _build_cors_preflight_response()
+        response = jsonify({'message': 'Preflight Request successful'})
+        response.headers.add('Access-Control-Allow-Headers', 'Content-Type')
+        response.headers.add('Access-Control-Allow-Methods', 'POST')
+        response.headers.add('Access-Control-Allow-Credentials', 'true')
+        return response
+    else:
+        if 'user_id' not in session:
+            return jsonify({"error": "No hay sesión iniciada"}), 401
+    
+        user_id = session['user_id']
+        data = request.json
 
-    data = request.json
-    fecha_inicio = data.get('fechaInicio')
-    fecha_fin = data.get('fechaFin')
-    id_huesped = session.get('user_id')
-    id_alojamiento = session.get('id_alojamiento')
+        print(data)
+        fecha_inicio = data.get('fechaInicio')
+        fecha_fin = data.get('fechaFin')
+        id_huesped = user_id
+        id_alojamiento = session.get('id_alojamiento')
 
-    if not id_huesped or not id_alojamiento:
-        return _corsify_actual_response(jsonify({"error": "Sesión no válida o datos incompletos"}), 400)
+        if not id_huesped or not id_alojamiento:
+            return _corsify_actual_response(jsonify({"error": "Sesión no válida o datos incompletos"}), 400)
 
-    try:
-        cur = mysql.connection.cursor()
-        cur.execute("INSERT INTO reserva (fecha_inicio, fecha_fin, id_huesped, id_alojamiento) VALUES (%s, %s, %s, %s)",
+        try:
+            cur = mysql.connection.cursor()
+            cur.execute("INSERT INTO reserva (fecha_inicio, fecha_fin, id_huesped, id_alojamiento) VALUES (%s, %s, %s, %s)",
                     (fecha_inicio, fecha_fin, id_huesped, id_alojamiento))
-        mysql.connection.commit()
-        cur.close()
-        return _corsify_actual_response(jsonify({"message": "Reserva confirmada"}), 200)
-    except Exception as e:
-        return _corsify_actual_response(jsonify({"error": str(e)}), 500)
+            mysql.connection.commit()
+            cur.close()
+            return _corsify_actual_response(jsonify({"message": "Reserva confirmada"}), 200)
+        except Exception as e:
+            return _corsify_actual_response(jsonify({"error": str(e)}), 500)
+        
+if __name__ == '__main__':
+    app.run(debug=True)
     
 @app.route('/session', methods=['GET', 'OPTIONS'])
 def get_session():
@@ -449,3 +461,51 @@ def get_session():
 
     return _corsify_actual_response(jsonify({"id_huesped": id_huesped, "id_alojamiento": id_alojamiento}), 200)
 
+#### LLamada a los procedimientos almacenados
+@app.route('/calculate-reservation-price', methods=['POST'])
+def calculate_reservation_price():
+    data = request.json
+    id_alojamiento = data['id_alojamiento']
+    fecha_inicio = data['fecha_inicio']
+    fecha_fin = data['fecha_fin']
+
+    
+    
+    cur = mysql.connection.cursor()
+    try:
+        cur.execute("CALL CalcularPrecioReserva(%s, %s, %s, @p_precio_total)", (id_alojamiento, fecha_inicio, fecha_fin))
+        cur.execute("SELECT @p_precio_total")
+        result = cur.fetchone()
+        if result:
+            price = result[0]
+            return jsonify({'price': price}), 200
+        else:
+            return jsonify({'error': 'No se pudo calcular el precio'}), 400
+    except Exception as e:
+        return jsonify({'error': 'Error interno del servidor: ' + str(e)}), 500
+    finally:
+        cur.close()
+
+if __name__ == '__main__':
+    app.run(debug=True)
+
+@app.route('/cancelar-reserva', methods=['POST'])
+def cancelar_reserva():
+    if 'user_id' not in session:
+        return jsonify({"error": "Usuario no autenticado"}), 401
+    
+    data = request.get_json()
+    reserva_id = data.get('id_reserva')
+
+    if not reserva_id:
+        return jsonify({"error": "ID de reserva es requerido"}), 400
+
+    try:
+        cur = mysql.connection.cursor()
+        cur.callproc('CancelarReserva', [reserva_id])
+        mysql.connection.commit()
+        cur.close()
+        return jsonify({"message": "Reserva cancelada exitosamente"}), 200
+    except Exception as e:
+        print(f"Error en el servidor: {e}")
+        return jsonify({"error": str(e)}), 500

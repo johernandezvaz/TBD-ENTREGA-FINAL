@@ -19,6 +19,14 @@ interface AllCountry {
   name: string;
 }
 
+interface Reservation {
+  id_reserva: number;
+  fecha_inicio: string;
+  fecha_fin: string;
+  id_huesped: number;
+  id_alojamiento: number;
+}
+
 const HomepageCliente: React.FC = () => {
   const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -27,6 +35,7 @@ const HomepageCliente: React.FC = () => {
   const [popupVisible, setPopupVisible] = useState(false);
   const [allCountries, setAllCountries] = useState<AllCountry[]>([]);
   const [searchCountries, setSearchCountries] = useState<string[]>([]);
+  const [reservas, setReservas] = useState<Reservation[]>([]);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -52,6 +61,31 @@ const HomepageCliente: React.FC = () => {
     };
 
     fetchUserInfo();
+  }, []);
+
+  useEffect(() => {
+    const fetchReservas = async () => {
+      try {
+        const response = await fetch('http://localhost:5000/mis-reservas', {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          credentials: 'include',
+        });
+
+        if (!response.ok) {
+          throw new Error('Error al obtener las reservas');
+        }
+
+        const result = await response.json();
+        setReservas(result);
+      } catch (error) {
+        console.error('Error al obtener las reservas:', error);
+      }
+    };
+
+    fetchReservas();
   }, []);
 
   function parseTextData(textData: string): AllCountry[] {
@@ -109,6 +143,27 @@ const HomepageCliente: React.FC = () => {
     setProperties([]);
   };
 
+  const handleCancelarReserva = async (idReserva: number) => {
+    try {
+      const response = await fetch('http://localhost:5000/cancelar-reserva', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include',
+        body: JSON.stringify({ id_reserva: idReserva }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Error al cancelar la reserva');
+      }
+
+      setReservas(reservas.filter(reserva => reserva.id_reserva !== idReserva));
+    } catch (error) {
+      console.error('Error al cancelar la reserva:', error);
+    }
+  };
+
   return (
     <div className="container mx-auto mt-8">
       {error && <div>{error}</div>}
@@ -144,6 +199,29 @@ const HomepageCliente: React.FC = () => {
                   {country}
                 </button>
               ))}
+            </div>
+          )}
+
+          {reservas.length > 0 && (
+            <div className="mt-8">
+              <h3 className="text-xl font-semibold mb-2">Mis Reservas</h3>
+              <ul>
+                {reservas.map(reserva => (
+                  <li key={reserva.id_reserva} className="mb-4">
+                    <div>
+                      <p>Reserva ID: {reserva.id_reserva}</p>
+                      <p>Fecha de inicio: {reserva.fecha_inicio}</p>
+                      <p>Fecha de fin: {reserva.fecha_fin}</p>
+                      <button
+                        onClick={() => handleCancelarReserva(reserva.id_reserva)}
+                        className="bg-red-500 text-white px-4 py-2 rounded-md mt-2"
+                      >
+                        Cancelar Reserva
+                      </button>
+                    </div>
+                  </li>
+                ))}
+              </ul>
             </div>
           )}
         </div>
