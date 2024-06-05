@@ -4,7 +4,7 @@ import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 
 interface Property {
-  id: number;
+  id_alojamiento: number;
   name: string;
   description: string;
   direccion: string;
@@ -32,7 +32,8 @@ const Booking: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [showPopup, setShowPopup] = useState(false);
   const [reservationPrice, setReservationPrice] = useState<number | null>(null);
-  const [paymentMethod, setPaymentMethod] = useState<string>('tarjeta_credito'); // Método de pago predeterminado
+  const [paymentMethod, setPaymentMethod] = useState<string>('tarjeta_credito');
+  const [daysOfStay, setDaysOfStay] = useState<number>(0);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -66,7 +67,7 @@ const Booking: React.FC = () => {
 
   useEffect(() => {
     if (startDate && endDate) {
-      const calculatePrice = async () => {
+      const calculateDaysAndPrice = async () => {
         const reservation: Reservation = {
           idAlojamiento: property?.id_alojamiento,
           fechaInicio: startDate.toISOString().split('T')[0],
@@ -92,12 +93,15 @@ const Booking: React.FC = () => {
           }
           const data = await response.json();
           setReservationPrice(data.price);
+          setDaysOfStay(data.days);  // Asumimos que la API devuelve los días también
         } catch (error) {
           console.error('Error al calcular el precio de la reserva:', error);
         }
       };
 
-      calculatePrice();
+      calculateDaysAndPrice();
+    } else {
+      setDaysOfStay(0);
     }
   }, [startDate, endDate, property]);
 
@@ -115,8 +119,8 @@ const Booking: React.FC = () => {
       idAlojamiento: property?.id_alojamiento,
       fechaInicio: startDate.toISOString().split('T')[0],
       fechaFin: endDate.toISOString().split('T')[0],
-      metodoPago: paymentMethod, // Incluir el método de pago
-      monto: reservationPrice, // Asegurarse de incluir el monto
+      metodoPago: paymentMethod,
+      monto: reservationPrice,
     };
 
     confirmarReserva(reservation);
@@ -145,7 +149,7 @@ const Booking: React.FC = () => {
         console.error('Error al confirmar la reserva:', error);
       }
     }
-};
+  };
 
   if (loading) {
     return <div>Cargando...</div>;
@@ -239,6 +243,9 @@ const Booking: React.FC = () => {
             </div>
             <div className="mb-4">
               <h2 className="text-xl font-semibold">Precio de la reserva: ${reservationPrice !== null ? reservationPrice : 'Calculando...'}</h2>
+            </div>
+            <div className="mb-4">
+              <h2 className="text-xl font-semibold">Días de estancia: {daysOfStay}</h2>
             </div>
             <div className="flex justify-end space-x-4">
               <button

@@ -1,5 +1,6 @@
 import MySQLdb
 from flask import Flask, request, jsonify, session, redirect
+import json
 from flask_mysqldb import MySQL
 from flask_cors import CORS
 import datetime
@@ -106,9 +107,8 @@ def login():
 
     try:
         cur = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-        cur.execute("SELECT id_usuario, nombre, apellido, correo_electronico, tipo_usuario FROM usuario WHERE correo_electronico = %s AND contrasena = %s", (email, password))
+        cur.execute("SELECT id_usuario, nombre, apellido, correo_electronico, tipo_usuario FROM usuario WHERE correo_electronico = %s AND ValidarContrasena(correo_electronico, %s)", (email, password))
         user = cur.fetchone()
-        cur.close()
 
         if user:
             # Guardar la información del usuario en la sesión
@@ -132,6 +132,7 @@ def login():
 
 if __name__ == '__main__':
     app.run(debug=True)
+
 
 
 @app.route('/user-info', methods=['GET'])
@@ -299,30 +300,19 @@ def get_properties_by_country():
     try:
         cur = mysql.connection.cursor()
 
-        # Obtener las propiedades por país
-        cur.execute("""
-            SELECT a.id_alojamiento, a.nombre_alojamiento, a.descripcion, c.nombre_ciudad, a.direccion
-            FROM alojamiento a
-            LEFT JOIN ciudad c ON a.id_ciudad = c.id_ciudad
-            LEFT JOIN pais p ON c.id_pais = p.id_pais
-            WHERE p.nombre_pais = %s
-        """, (country,))
-        properties = [
-            {
-                "id": row[0],
-                "name": row[1],
-                "description": row[2],
-                "city": row[3],
-                "address": row[4]
-            } 
-            for row in cur.fetchall()
-        ]
+        cur.execute("SELECT BuscarAlojamientos(%s)", (country,))
+        result = cur.fetchone()
+        properties = json.loads(result[0])
+
         cur.close()
 
         return jsonify({"properties": properties}), 200
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
+
+
 
 @app.route('/all-countries', methods=['GET'])
 def get_all_countries():
@@ -454,15 +444,18 @@ def confirmar_reserva():
 
         try:
             cur = mysql.connection.cursor()
-            cur.callproc('RealizarReserva', (fecha_inicio, fecha_fin, user_id, id_alojamiento, metodo_pago, monto))
+
+            # Generar código de confirmación
+            cur.execute("SELECT GenerarCodigoConfirmacion()")
+            codigo_confirmacion = cur.fetchone()[0]
+
+            # Realizar reserva con código de confirmación
+            cur.callproc('RealizarReserva', (fecha_inicio, fecha_fin, user_id, id_alojamiento, metodo_pago, monto, codigo_confirmacion))
             mysql.connection.commit()
             cur.close()
-            return jsonify({"message": "Reserva confirmada"}), 200
+            return jsonify({"message": "Reserva confirmada", "codigo_confirmacion": codigo_confirmacion}), 200
         except Exception as e:
             return jsonify({"error": str(e)}), 500
-
-if __name__ == '__main__':
-    app.run(debug=True)
 
     
 @app.route('/session', methods=['GET', 'OPTIONS'])
@@ -488,7 +481,7 @@ def mis_reservas():
     cur = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
     try:
         cur.execute("""
-            SELECT r.id_reserva, r.fecha_inicio, r.fecha_fin, a.nombre_alojamiento AS alojamiento
+            SELECT r.id_reserva, r.fecha_inicio, r.fecha_fin, r.codigo_confirmacion, a.nombre_alojamiento AS alojamiento
             FROM reserva r
             JOIN alojamiento a ON r.id_alojamiento = a.id_alojamiento
             WHERE r.id_huesped = %s
@@ -517,10 +510,14 @@ def calculate_reservation_price():
     try:
         cur.execute("CALL CalcularPrecioReserva(%s, %s, %s, @p_precio_total)", (id_alojamiento, fecha_inicio, fecha_fin))
         cur.execute("SELECT @p_precio_total")
-        result = cur.fetchone()
+        result = cur.fetchone() 
+
+        cur.execute("SELECT CalcularDiasEstancia(%s, %s)", (fecha_inicio, fecha_fin))
+        result2 = cur.fetchone()
+        print(result2)
         if result:
             price = result[0]
-            return jsonify({'price': price}), 200
+            return jsonify({'price': price, 'days': result2}), 200
         else:
             return jsonify({'error': 'No se pudo calcular el precio'}), 400
     except Exception as e:
@@ -530,6 +527,8 @@ def calculate_reservation_price():
 
 if __name__ == '__main__':
     app.run(debug=True)
+
+
 
 
 @app.route('/cancelar-reserva', methods=['POST'])

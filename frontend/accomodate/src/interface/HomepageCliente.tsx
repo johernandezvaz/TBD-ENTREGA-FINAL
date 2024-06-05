@@ -6,12 +6,15 @@ interface UserInfo {
   name: string;
   role: string;
   countries: string[];
+
 }
 
 interface Property {
-  id: number;
-  name: string;
-  description: string;
+  id_alojamiento: number;
+  nombre_alojamiento: string;
+  descripcion: string;
+  nombre_ciudad: string;
+  direccion: string;
 }
 
 interface AllCountry {
@@ -24,6 +27,7 @@ interface Reservation {
   fecha_inicio: string;
   fecha_fin: string;
   alojamiento: string;
+  codigo_confirmacion: string;
 }
 
 const HomepageCliente: React.FC = () => {
@@ -138,7 +142,7 @@ const HomepageCliente: React.FC = () => {
   }, []);
 
   const handleReservarClick = (property: Property) => {
-    navigate(`/reserva/${property.id}`);
+    navigate(`/reserva/${property.id_alojamiento}`);
   };
 
   const handleCountryClick = async (country: string) => {
@@ -146,16 +150,18 @@ const HomepageCliente: React.FC = () => {
     setPopupVisible(true);
 
     try {
-      const response = await fetch(`http://localhost:5000/properties?country=${country}`);
-      if (!response.ok) {
-        throw new Error('Error al obtener las propiedades');
-      }
-      const data = await response.json();
-      setProperties(data.properties);
+        const response = await fetch(`http://localhost:5000/properties?country=${country}`);
+        if (!response.ok) {
+            throw new Error('Error al obtener las propiedades');
+        }
+        const data = await response.json();
+        console.log('Fetched properties:', data.properties); // Log fetched properties
+        setProperties(data.properties);
     } catch (error) {
-      console.error('Error al obtener las propiedades:', error);
+        console.error('Error al obtener las propiedades:', error);
     }
-  };
+};
+
 
   const handleCountryChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const country = event.target.value;
@@ -258,49 +264,53 @@ const HomepageCliente: React.FC = () => {
             </div>
           )}
           <h3 className="text-xl font-semibold mb-2 mt-4">Mis Reservas:</h3>
-          {reservations.length === 0 ? (
-            <p>No tienes reservas actualmente.</p>
-          ) : (
-            <ul>
-              {reservations.map((reservation) => (
-                <li key={reservation.id_reserva} className="mb-4 border-b border-gray-300 pb-4">
-                  <h4 className="text-lg font-semibold">{reservation.alojamiento}</h4>
-                  <p>Fecha inicio: {reservation.fecha_inicio}</p>
-                  <p>Fecha fin: {reservation.fecha_fin}</p>
-                  <button
+{reservations.length === 0 ? (
+    <p>No tienes reservas actualmente.</p>
+) : (
+    <ul>
+        {reservations.map((reservation) => (
+            <li key={reservation.id_reserva} className="mb-4 border-b border-gray-300 pb-4">
+                <h4 className="text-lg font-semibold">{reservation.alojamiento}</h4>
+                <p>Fecha inicio: {reservation.fecha_inicio}</p>
+                <p>Fecha fin: {reservation.fecha_fin}</p>
+                <p>Código de confirmación: {reservation.codigo_confirmacion}</p>
+                <button
                     onClick={() => handleCancelReservation(reservation.id_reserva)}
                     className="mt-2 bg-red-500 text-white px-4 py-2 rounded-md"
-                  >
+                >
                     Cancelar Reserva
-                  </button>
-                </li>
-              ))}
-            </ul>
-          )}
+                </button>
+            </li>
+        ))}
+    </ul>
+)}
         </div>
       )}
 
-      {popupVisible && (
-        <div className="popup fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="bg-white p-4 rounded shadow-md max-w-md w-full">
+{popupVisible && (
+    <div className="popup fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+        <div className="bg-white p-4 rounded shadow-md max-w-md w-full">
             <button className="absolute top-0 right-0 mt-2 mr-2 text-gray-600 hover:text-gray-800" onClick={closePopup}>
-              <FaTimes />
+                <FaTimes />
             </button>
             <h3 className="text-xl font-semibold mb-4 text-center">{selectedCountry}</h3>
             <div className="grid grid-cols-1 gap-4">
-              {properties.map((property) => (
-                <div key={property.id} className="border border-gray-300 p-4 rounded">
-                  <h4 className="text-lg font-semibold mb-2">{property.name}</h4>
-                  <p className="mb-2">{property.description}</p>
-                  <button onClick={() => handleReservarClick(property)} className="mt-2 bg-alternative-300 text-alternative-200 hover:bg-gray-200 hover:text-alternative-200 px-4 py-2 rounded-md">
-                    Reservar
-                  </button>
-                </div>
-              ))}
+                {properties.map((property) => (
+                    <div key={property.id_alojamiento} className="border border-gray-300 p-4 rounded">
+                        <h4 className="text-lg font-semibold mb-2">{property.nombre_alojamiento}</h4>
+                        <p className="mb-2">{property.descripcion}</p>
+                        <p className="mb-2">{property.nombre_ciudad}</p>
+                        <p className="mb-2">{property.direccion}</p>
+                        <button onClick={() => handleReservarClick(property)} className="mt-2 bg-alternative-300 text-alternative-200 hover:bg-gray-200 hover:text-alternative-200 px-4 py-2 rounded-md">
+                            Reservar
+                        </button>
+                    </div>
+                ))}
             </div>
-          </div>
         </div>
-      )}
+    </div>
+)}
+
 
       <div className="max-w-screen-lg mx-auto bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
         <h2 className="text-center text-2xl font-semibold mb-4">Actualizar Información</h2>
