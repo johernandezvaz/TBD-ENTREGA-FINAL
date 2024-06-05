@@ -54,8 +54,7 @@ const AddPropertyForm: React.FC = () => {
       if (!response.ok) {
         throw new Error('Error al agregar la propiedad');
       }
-
-      navigate('/'); // Redirige de vuelta a la página principal después de agregar la propiedad
+      navigate('/arrendatario'); // Redirige de vuelta a la página principal después de agregar la propiedad
     } catch (error) {
       setError('Error al agregar la propiedad');
     }
@@ -86,15 +85,15 @@ const AddPropertyForm: React.FC = () => {
         />
         <label className="block text-gray-700 text-sm font-bold mb-2">Ciudad de la Propiedad</label>
         <select
-          value={newPropertyCity}
-          onChange={(e) => setNewPropertyCity(e.target.value)}
-          className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline mb-2"
-        >
-          <option value="">Selecciona una ciudad</option>
-          {cities.map(city => (
-            <option key={city} value={city}>{city}</option>
-          ))}
-        </select>
+  value={newPropertyCity}
+  onChange={(e) => setNewPropertyCity(e.target.value)}
+  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline mb-2"
+>
+  <option value="">Selecciona una ciudad</option>
+  {cities.map(city => (
+    <option key={city.id} value={city.name}>{city.name}</option>
+  ))}
+</select>
         <label className="block text-gray-700 text-sm font-bold mb-2">Dirección de la Propiedad</label>
         <input
           type="text"

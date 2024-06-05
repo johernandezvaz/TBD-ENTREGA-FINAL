@@ -241,29 +241,40 @@ def add_property():
         return jsonify({"error": "No hay sesión iniciada"}), 401
 
     data = request.json
-
+    print(data)
+    user_id = session['user_id']
+    print(user_id)
     # Obtener los datos del formulario enviado por el cliente
     name = data.get('name')
     description = data.get('description')
     address = data.get('address')
-    city_id = data.get('city_id')
-    # Asegúrate de agregar más campos según la estructura de tu tabla alojamiento
-
-    if not name or not address or not city_id:
-        return jsonify({"error": "Por favor complete todos los campos requeridos"}), 400
+   
 
     try:
+        city_name = data.get('city')
         cur = mysql.connection.cursor()
+        cur.execute("SELECT id_ciudad FROM ciudad WHERE nombre_ciudad = %s", (city_name,))
+        result = cur.fetchone()
+        if result:
+            city_id = result[0]
+        else:
+            return jsonify({"error": "La ciudad proporcionada no existe"}), 400
+        
+        if not name or not address or not city_id:
+            return jsonify({"error": "Por favor complete todos los campos requeridos"}), 400
 
+        cur = mysql.connection.cursor()
+        print(city_id)
         # Insertar el nuevo alojamiento en la base de datos
         cur.execute("INSERT INTO alojamiento (nombre_alojamiento, descripcion, direccion, id_ciudad, id_anfitrion, precio) VALUES (%s, %s, %s, %s, %s, %s)", 
-                    (name, description, address, city_id, session['user_id'], 0.0))  # Precio inicialmente 0.0, puedes cambiarlo según tu lógica
+                    (name, description, address, city_id, user_id, 0.0))  # Precio inicialmente 0.0, puedes cambiarlo según tu lógica
 
         mysql.connection.commit()
         cur.close()
         return jsonify({"message": "Alojamiento agregado exitosamente"}), 200
 
     except Exception as e:
+        print(e)
         return jsonify({"error": str(e)}), 500
 
 # Otras rutas y funciones aquí...
