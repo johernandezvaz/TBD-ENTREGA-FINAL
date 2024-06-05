@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useParams, Navigate } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 
@@ -17,10 +17,13 @@ interface Reservation {
   idAlojamiento: number | undefined;
   fechaInicio: string;
   fechaFin: string;
+  metodoPago: string;
+  monto: number | undefined;
 }
 
 const Booking: React.FC = () => {
   const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
   const [property, setProperty] = useState<Property | null>(null);
   const [availability, setAvailability] = useState<string[]>([]);
   const [startDate, setStartDate] = useState<Date | null>(null);
@@ -29,6 +32,7 @@ const Booking: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [showPopup, setShowPopup] = useState(false);
   const [reservationPrice, setReservationPrice] = useState<number | null>(null);
+  const [paymentMethod, setPaymentMethod] = useState<string>('tarjeta_credito'); // Método de pago predeterminado
 
   useEffect(() => {
     const fetchData = async () => {
@@ -60,6 +64,43 @@ const Booking: React.FC = () => {
     fetchData();
   }, [id]);
 
+  useEffect(() => {
+    if (startDate && endDate) {
+      const calculatePrice = async () => {
+        const reservation: Reservation = {
+          idAlojamiento: property?.id_alojamiento,
+          fechaInicio: startDate.toISOString().split('T')[0],
+          fechaFin: endDate.toISOString().split('T')[0],
+          metodoPago: '',
+          monto: reservationPrice,
+        };
+
+        try {
+          const response = await fetch('http://localhost:5000/calculate-reservation-price', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              id_alojamiento: reservation.idAlojamiento,
+              fecha_inicio: reservation.fechaInicio,
+              fecha_fin: reservation.fechaFin,
+            }),
+          });
+          if (!response.ok) {
+            throw new Error('Error al calcular el precio de la reserva');
+          }
+          const data = await response.json();
+          setReservationPrice(data.price);
+        } catch (error) {
+          console.error('Error al calcular el precio de la reserva:', error);
+        }
+      };
+
+      calculatePrice();
+    }
+  }, [startDate, endDate, property]);
+
   const handleReservarClick = () => {
     setShowPopup(true);
   };
@@ -74,62 +115,37 @@ const Booking: React.FC = () => {
       idAlojamiento: property?.id_alojamiento,
       fechaInicio: startDate.toISOString().split('T')[0],
       fechaFin: endDate.toISOString().split('T')[0],
+      metodoPago: paymentMethod, // Incluir el método de pago
+      monto: reservationPrice, // Asegurarse de incluir el monto
     };
 
-    
-
-
-    try {
-      const response = await fetch('http://localhost:5000/calculate-reservation-price', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          id_alojamiento: reservation.idAlojamiento,
-          fecha_inicio: reservation.fechaInicio,
-          fecha_fin: reservation.fechaFin,
-        }),
-      });
-      if (!response.ok) {
-        throw new Error('Error al calcular el precio de la reserva');
-      }
-      const data = await response.json();
-      setReservationPrice(data.price);
-
-      // Aquí puedes proceder a confirmar la reserva si lo deseas
-      console.log(confirmarReserva)
-      confirmarReserva(reservation);
-    } catch (error) {
-      console.error('Error al calcular el precio de la reserva:', error);
-    }
+    confirmarReserva(reservation);
   };
 
-  const confirmarReserva = (reservation: Reservation) => {
-    if (reservation.fechaInicio && reservation.fechaFin) {
-      fetch('http://localhost:5000/confirmar-reserva', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        credentials: 'include',
-        body: JSON.stringify(reservation),
-      })
-        .then(response => {
-          if (!response.ok) {
-            throw new Error('Error al confirmar la reserva');
-          }
-          return response.json();
-        })
-        .then(data => {
-          console.log('Reserva confirmada:', data);
-          Navigate({ to: '/clientes' });
-        })
-        .catch(error => {
-          console.error('Error al confirmar la reserva:', error);
+  const confirmarReserva = async (reservation: Reservation) => {
+    if (reservation.fechaInicio && reservation.fechaFin && reservation.metodoPago && reservation.monto) {
+      try {
+        const response = await fetch('http://localhost:5000/confirmar-reserva', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          credentials: 'include',
+          body: JSON.stringify(reservation),
         });
+
+        if (!response.ok) {
+          throw new Error('Error al confirmar la reserva');
+        }
+
+        const data = await response.json();
+        console.log('Reserva confirmada:', data);
+        navigate('/cliente');
+      } catch (error) {
+        console.error('Error al confirmar la reserva:', error);
+      }
     }
-  };
+};
 
   if (loading) {
     return <div>Cargando...</div>;
@@ -147,7 +163,7 @@ const Booking: React.FC = () => {
     const dateString = date.toISOString().split('T')[0];
     return !availability.includes(dateString);
   };
-  console.log(handleSubmitReservation);
+
   return (
     <div className="max-w-4xl mx-auto p-4">
       <h1 className="text-3xl font-semibold mb-4">{property.name}</h1>
@@ -209,6 +225,17 @@ const Booking: React.FC = () => {
                   minDate={startDate}
                 />
               </div>
+            </div>
+            <div className="mb-4">
+              <label className="block text-gray-700">Método de pago</label>
+              <select
+                value={paymentMethod}
+                onChange={(e) => setPaymentMethod(e.target.value)}
+                className="border border-gray-300 p-2 rounded-md w-full"
+              >
+                <option value="tarjeta_credito">Tarjeta de Crédito</option>
+                <option value="tarjeta_debito">Tarjeta de Débito</option>
+              </select>
             </div>
             <div className="mb-4">
               <h2 className="text-xl font-semibold">Precio de la reserva: ${reservationPrice !== null ? reservationPrice : 'Calculando...'}</h2>

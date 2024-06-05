@@ -4,6 +4,7 @@ from flask_mysqldb import MySQL
 from flask_cors import CORS
 import datetime
 from datetime import date
+from datetime import datetime
 from config import Config
 
 from requests import Session
@@ -60,6 +61,14 @@ def register():
         if not existing_city:
             cur.execute("INSERT INTO ciudad (nombre_ciudad, id_pais) VALUES (%s, %s)", (city_name, country))
             mysql.connection.commit()
+            cur.execute("SELECT * FROM ciudad WHERE nombre_ciudad = %s", (city_name,))
+            existing_city = cur.fetchone()
+
+        # Asegurarse de que 'existing_city' no sea None
+        if not existing_city:
+            return jsonify({"error": "Error al crear o recuperar la ciudad"}), 500
+
+        city_id = existing_city[0]  # Acceder al primer elemento de la tupla
 
         # Verificar si el correo electrónico ya está en uso
         cur.execute("SELECT * FROM usuario WHERE correo_electronico = %s", (email,))
@@ -69,13 +78,10 @@ def register():
             # El correo electrónico ya está en uso, devolver un mensaje de error
             return jsonify({"error": "El correo electrónico ya está en uso"}), 400
 
-        # Encriptar la contraseña (si es necesario)
-        # Aquí puedes agregar la encriptación si lo deseas
-        current_date = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-
-        # Insertar el nuevo usuario en la base de datos
-        cur.execute("INSERT INTO usuario (nombre, apellido, correo_electronico, direccion, tipo_usuario, contrasena, fecha_registro, id_ciudad, id_pais) VALUES (%s, %s, %s, %s, %s, %s, %s, (SELECT id_ciudad FROM ciudad WHERE nombre_ciudad = %s), %s)", 
-                    (first_name, last_name, email, address, role, password, current_date, city_name, country))
+        # Llamar al procedimiento almacenado para crear el nuevo usuario
+        cur.callproc('GestionarUsuario', (
+            'crear', 0, first_name, last_name, email, address, country, city_id, password, role
+        ))
         
         mysql.connection.commit()
         cur.close()
@@ -83,6 +89,7 @@ def register():
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
 
 
 
@@ -349,14 +356,14 @@ def reserva():
 
 def _build_cors_preflight_response():
     response = jsonify({'message': 'Preflight request received'})
-    response.headers.add("Access-Control-Allow-Origin", "*")
+    response.headers.add("Access-Control-Allow-Origin", "http://localhost:5173")
     response.headers.add("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
     response.headers.add("Access-Control-Allow-Headers", "Content-Type")
     return response
 
 def _corsify_actual_response(response, status_code=200):
     response.status_code = status_code
-    response.headers.add("Access-Control-Allow-Origin", "*")
+    response.headers.add("Access-Control-Allow-Origin", "http://localhost:5173")
     response.headers.add("Access-Control-Allow-Credentials", "true")
     return response
 
@@ -417,36 +424,46 @@ def confirmar_reserva():
         response = jsonify({'message': 'Preflight Request successful'})
         response.headers.add('Access-Control-Allow-Headers', 'Content-Type')
         response.headers.add('Access-Control-Allow-Methods', 'POST')
-        response.headers.add('Access-Control-Allow-Credentials', 'true')
         return response
-    else:
+    elif request.method == 'POST':
         if 'user_id' not in session:
             return jsonify({"error": "No hay sesión iniciada"}), 401
-    
+
         user_id = session['user_id']
         data = request.json
 
-        print(data)
-        fecha_inicio = data.get('fechaInicio')
-        fecha_fin = data.get('fechaFin')
-        id_huesped = user_id
-        id_alojamiento = session.get('id_alojamiento')
+        # Depurar datos recibidos
+        print("Datos recibidos:", data)
 
-        if not id_huesped or not id_alojamiento:
-            return _corsify_actual_response(jsonify({"error": "Sesión no válida o datos incompletos"}), 400)
+        fecha_inicio_str = data.get('fechaInicio')
+        fecha_fin_str = data.get('fechaFin')
+        id_alojamiento = data.get('idAlojamiento')
+        metodo_pago = data.get('metodoPago')  # Obtener el método de pago
+        monto = data.get('monto')  # Obtener el monto de la reserva
+
+        # Validar que todos los campos necesarios están presentes
+        if not id_alojamiento or not fecha_inicio_str or not fecha_fin_str or not metodo_pago or not monto:
+            return jsonify({"error": "Datos incompletos"}), 400
+
+        try:
+            id_alojamiento = int(id_alojamiento)  # Convertir a entero después de la validación
+            fecha_inicio = datetime.strptime(fecha_inicio_str, '%Y-%m-%d').date()
+            fecha_fin = datetime.strptime(fecha_fin_str, '%Y-%m-%d').date()
+        except ValueError as e:
+            return jsonify({"error": "Formato de fecha o ID inválido"}), 400
 
         try:
             cur = mysql.connection.cursor()
-            cur.execute("INSERT INTO reserva (fecha_inicio, fecha_fin, id_huesped, id_alojamiento) VALUES (%s, %s, %s, %s)",
-                    (fecha_inicio, fecha_fin, id_huesped, id_alojamiento))
+            cur.callproc('RealizarReserva', (fecha_inicio, fecha_fin, user_id, id_alojamiento, metodo_pago, monto))
             mysql.connection.commit()
             cur.close()
-            return _corsify_actual_response(jsonify({"message": "Reserva confirmada"}), 200)
+            return jsonify({"message": "Reserva confirmada"}), 200
         except Exception as e:
-            return _corsify_actual_response(jsonify({"error": str(e)}), 500)
-        
+            return jsonify({"error": str(e)}), 500
+
 if __name__ == '__main__':
     app.run(debug=True)
+
     
 @app.route('/session', methods=['GET', 'OPTIONS'])
 def get_session():
@@ -461,16 +478,41 @@ def get_session():
 
     return _corsify_actual_response(jsonify({"id_huesped": id_huesped, "id_alojamiento": id_alojamiento}), 200)
 
+@app.route('/mis-reservas', methods=['GET'])
+def mis_reservas():
+    if 'user_id' not in session:
+        return jsonify({'error': 'Usuario no autenticado'}), 401
+
+    user_id = session['user_id']
+
+    cur = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+    try:
+        cur.execute("""
+            SELECT r.id_reserva, r.fecha_inicio, r.fecha_fin, a.nombre_alojamiento AS alojamiento
+            FROM reserva r
+            JOIN alojamiento a ON r.id_alojamiento = a.id_alojamiento
+            WHERE r.id_huesped = %s
+        """, (user_id,))
+        
+        reservas = cur.fetchall()
+        return jsonify({'reservas': reservas}), 200
+    except Exception as e:
+        print(f"Error: {e}")  # Agregar logging para errores
+        return jsonify({'error': 'Error interno del servidor: ' + str(e)}), 500
+    finally:
+        cur.close()
+
+
+
 #### LLamada a los procedimientos almacenados
 @app.route('/calculate-reservation-price', methods=['POST'])
 def calculate_reservation_price():
     data = request.json
+    print(data)
     id_alojamiento = data['id_alojamiento']
     fecha_inicio = data['fecha_inicio']
     fecha_fin = data['fecha_fin']
 
-    
-    
     cur = mysql.connection.cursor()
     try:
         cur.execute("CALL CalcularPrecioReserva(%s, %s, %s, @p_precio_total)", (id_alojamiento, fecha_inicio, fecha_fin))
@@ -489,23 +531,120 @@ def calculate_reservation_price():
 if __name__ == '__main__':
     app.run(debug=True)
 
+
 @app.route('/cancelar-reserva', methods=['POST'])
 def cancelar_reserva():
-    if 'user_id' not in session:
-        return jsonify({"error": "Usuario no autenticado"}), 401
-    
-    data = request.get_json()
-    reserva_id = data.get('id_reserva')
+    data = request.json
+    id_reserva = data.get('id_reserva')
 
-    if not reserva_id:
-        return jsonify({"error": "ID de reserva es requerido"}), 400
+    if 'user_id' not in session:
+        return jsonify({'error': 'Usuario no autenticado'}), 401
+
+    cur = mysql.connection.cursor()
+    try:
+        cur.callproc('CancelarReserva', [id_reserva])
+        mysql.connection.commit()
+        return jsonify({'message': 'Reserva cancelada exitosamente'}), 200
+    except Exception as e:
+        print(f"Error: {e}")  # Agregar logging para errores
+        return jsonify({'error': 'Error interno del servidor: ' + str(e)}), 500
+    finally:
+        cur.close()
+
+@app.route('/estadisticas-reservas', methods=['GET'])
+def estadisticas_reservas():
+    if 'user_id' not in session:
+        return jsonify({"error": "No autorizado"}), 401
+
+    user_id = session['user_id']
+    fecha_inicio_str = request.args.get('fecha_inicio')
+    fecha_fin_str = request.args.get('fecha_fin')
+
+    fecha_inicio = datetime.strptime(fecha_inicio_str, '%Y-%m-%d').date()
+    fecha_fin = datetime.strptime(fecha_fin_str, '%Y-%m-%d').date()
+
+
+
+    if not fecha_inicio or not fecha_fin:
+        return jsonify({"error": "Por favor, proporcione fecha de inicio y fecha de fin"}), 400
 
     try:
         cur = mysql.connection.cursor()
-        cur.callproc('CancelarReserva', [reserva_id])
-        mysql.connection.commit()
+        
+        
+        # Llamar al procedimiento almacenado
+        cur.execute("CALL GenerarEstadisticasReservas(%s, %s, @p_numero_total_reservas, @p_ingresos_generados, @p_promedio_duracion_estancia)", (fecha_inicio, fecha_fin))
+
+        # Obtener los valores de los parámetros OUT
+        cur.execute("SELECT @p_numero_total_reservas, @p_ingresos_generados, @p_promedio_duracion_estancia;")
+        result = cur.fetchone()
+        numero_total_reservas = int(result[0])
+        ingresos_generados = float(result[1])
+        promedio_duracion_estancia = float(result[2])
+
+        print(numero_total_reservas)
+        print(ingresos_generados)
+        print(promedio_duracion_estancia)
         cur.close()
-        return jsonify({"message": "Reserva cancelada exitosamente"}), 200
+
+        return jsonify({
+            "numero_total_reservas": numero_total_reservas,
+            "ingresos_generados": ingresos_generados,
+            "promedio_duracion_estancia": promedio_duracion_estancia
+        }), 200
+
     except Exception as e:
         print(f"Error en el servidor: {e}")
         return jsonify({"error": str(e)}), 500
+
+if __name__ == '__main__':
+    app.run(debug=True)
+
+@app.route('/update-user', methods=['POST'])
+def update():
+    if 'user_id' in session:
+        user_id = session['user_id']
+        data = request.json
+        new_password = data.get('password')
+        new_email = data.get('email')
+
+        if new_password and new_email:
+            try:
+                cur = mysql.connection.cursor()
+
+                # Llamar al procedimiento almacenado
+                cur.callproc('GestionarUsuario', ['actualizar', user_id, None, None, new_email, None, None, None, new_password, None])
+                mysql.connection.commit()
+
+                return jsonify({'message': 'User updated successfully'}), 200
+            except Exception as e:
+                return jsonify({'message': 'An error occurred', 'error': str(e)}), 500
+            finally:
+                cur.close()
+        else:
+            return jsonify({'message': 'Password and email are required'}), 400
+    else:
+        return jsonify({'message': 'User not logged in'}), 401
+
+@app.route('/delete-user', methods=['DELETE'])
+def delete_user():
+    if 'user_id' in session:
+        user_id = session['user_id']
+        print(user_id)
+
+        try:
+            cur = mysql.connection.cursor()
+
+            cur.callproc('GestionarUsuario', ['eliminar', user_id, None, None, None, None, None, None, None, None])
+            mysql.connection.commit()
+            return jsonify({'message': 'Usuario eliminado exitosamente'})
+        except Exception as e:
+            print(e)
+            return jsonify({'error': str(e)}), 500
+        finally:
+            cur.close()
+    else:
+        return jsonify({'message': 'User not logged in'}), 401
+
+if __name__ == '__main__':
+    app.run(debug=True)

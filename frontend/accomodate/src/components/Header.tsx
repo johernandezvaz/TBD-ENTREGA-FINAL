@@ -16,7 +16,7 @@ const Header: React.FC<HeaderProps> = ({ loggedIn, role, onLogout }) => {
             {loggedIn ? (
               <>
                 <li><a href="/" className="text-alternative-300 hover:text-gray-200">Inicio</a></li>
-                {role === 'Cliente' && <li><a href="/clientes" className="text-alternative-300 hover:text-gray-200">Cliente</a></li>}
+                {role === 'Cliente' && <li><a href="/cliente" className="text-alternative-300 hover:text-gray-200">Cliente</a></li>}
                 {role === 'Arrendatario' && <li><a href="/arrendatario" className="text-alternative-300 hover:text-gray-200">Arrendatario</a></li>}
                 <li><button onClick={onLogout} className="text-alternative-300 hover:text-gray-200">Cerrar sesión</button></li>
               </>
